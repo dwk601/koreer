@@ -45,10 +45,9 @@ export function getApiBaseUrl(): string {
 
 function newRequestId(): string {
   // Avoid pulling in a UUID dep — short random hex is enough for correlation.
+  // globalThis.crypto is available in all runtimes we target (Node 20+, edge).
   const bytes = new Uint8Array(8);
-  (globalThis.crypto ?? require("node:crypto").webcrypto).getRandomValues(
-    bytes,
-  );
+  globalThis.crypto.getRandomValues(bytes);
   return Array.from(bytes, (b) => b.toString(16).padStart(2, "0")).join("");
 }
 
