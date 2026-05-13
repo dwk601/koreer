@@ -23,7 +23,7 @@ Open `http://localhost:3000` — redirects to `/ko`.
 | Command | Purpose |
 |---------|---------|
 | `npm run dev` | Next.js dev server with Turbopack |
-| `npm run build` | Production build (uses `output: 'standalone'`) |
+| `npm run build` | Production build |
 | `npm start` | Run the production server from `.next` |
 | `npm run lint` | ESLint (`eslint-config-next`) |
 | `npm test` | Vitest unit suite |
@@ -66,47 +66,24 @@ proxy.ts    next-intl routing (Next.js 16 replaces middleware.ts)
 tests/      vitest unit suites
 ```
 
-## Dockerize & deploy to Coolify
+## Deploy to Coolify (Nixpacks)
 
-The app builds a minimal Node server via Next.js `output: 'standalone'`.
+Coolify's Nixpacks provider auto-detects this Next.js app — no Dockerfile needed. It runs `npm ci`, `npm run build`, and starts the server with `npm start`.
 
-### Local container test
+### Deploy steps
 
-```bash
-docker build \
-  --build-arg NEXT_PUBLIC_SITE_URL=https://jobs.example.com \
-  -t koreer-web .
+1. **Create the application** — Coolify UI → `+ New` → **Application** → *Public/Private Git* (or from a connected provider). Point at this repo, branch `main`. Build pack: **Nixpacks**. Install, build, and start commands are auto-detected.
 
-docker run --rm -p 3000:3000 \
-  -e API_BASE_URL=https://api-srku356jbc5fqtrtwff3j3pd.50.146.245.162.sslip.io \
-  -e NEXT_PUBLIC_SITE_URL=http://localhost:3000 \
-  koreer-web
-```
+2. **Environment variables** — under the app's **Environment** tab. Mark `NEXT_PUBLIC_SITE_URL` as _"Available at build time"_ so it is baked into the client bundle.
 
-Then curl-smoke the container:
+   | Variable | Value | Build-time? |
+   |----------|-------|-------------|
+   | `API_BASE_URL` | Internal URL for apiV2 (e.g. `http://api:8000` on the shared Coolify network, or the managed resource's internal host) | runtime |
+   | `NEXT_PUBLIC_SITE_URL` | Public site URL (e.g. `https://jobs.yourdomain.com`) | **build** |
+   | `SERVICE_FQDN_WEB_3000` | Your public domain — leave blank for a generated `*.sslip.io` | runtime |
+   | `NODE_VERSION` | `24` (optional; Nixpacks defaults are usually fine) | build |
 
-```bash
-curl -sI http://localhost:3000/        # 307 -> /ko
-curl -s  http://localhost:3000/ko      | head -20
-curl -s  http://localhost:3000/robots.txt
-curl -s  http://localhost:3000/sitemap.xml | head -20
-```
-
-### Coolify deploy
-
-Following the same pattern as `koreaJobApiV2`:
-
-1. **Create the application** — Coolify UI → `+ New` → **Application** → *Dockerfile*. Point at this repo, branch `main`, build context `.`, dockerfile `Dockerfile`.
-
-2. **Environment variables** — under the app's **Environment** tab:
-
-   | Variable | Value |
-   |----------|-------|
-   | `API_BASE_URL` | Internal URL for apiV2 (e.g. `http://api:8000` on the shared Coolify network, or the managed resource's internal host) |
-   | `NEXT_PUBLIC_SITE_URL` | Public site URL (e.g. `https://jobs.yourdomain.com`) |
-   | `SERVICE_FQDN_WEB_3000` | Your public domain — leave blank for a generated `*.sslip.io` |
-
-3. **Deploy** — Coolify builds the image, runs `node server.js`, and Traefik auto-provisions TLS.
+3. **Deploy** — Coolify runs Nixpacks, builds the app, starts `npm start` on `:3000`, and Traefik auto-provisions TLS.
 
 4. **Verify:**
 
@@ -115,6 +92,17 @@ Following the same pattern as `koreaJobApiV2`:
    curl -sI https://<domain>/robots.txt
    curl -s  https://<domain>/sitemap.xml | head -20
    ```
+
+### Local smoke test
+
+```bash
+cp .env.example .env.local
+npm run build
+npm start
+# then
+curl -sI http://localhost:3000/        # 307 -> /ko
+curl -s  http://localhost:3000/robots.txt
+```
 
 ### Notes
 
