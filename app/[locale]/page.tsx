@@ -75,19 +75,19 @@ export default async function HomePage({
       {/* ---------- HERO ---------- */}
       <section className="relative overflow-hidden">
         <HeroBackdrop />
-        <div className="relative mx-auto w-full max-w-6xl px-4 pt-14 pb-20 sm:px-6 sm:pt-20 sm:pb-28 lg:pt-24">
-          <p className="text-xs font-medium uppercase tracking-[0.22em] text-ink-mute">
+        <div className="relative mx-auto w-full max-w-6xl px-4 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-28 lg:pt-28">
+          <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-ink-mute">
             {t("home.heroEyebrow")}
           </p>
           <h1
-            className="mt-5 max-w-4xl font-semibold leading-[1.02] tracking-tight text-balance"
+            className="mt-5 max-w-4xl font-semibold leading-[1.02] tracking-[-0.02em]"
             style={{ fontSize: "clamp(2.5rem, 6vw, 4.75rem)" }}
           >
             {t("home.heroTitle")}
             <br />
             <span className="text-ink-mute">{t("home.heroTitleAccent")}</span>
           </h1>
-          <p className="mt-6 max-w-xl text-lg leading-snug text-ink-soft">
+          <p className="mt-6 max-w-xl text-[17px] leading-[1.45] text-ink-soft">
             {t("home.heroSub")}
           </p>
 
@@ -96,17 +96,20 @@ export default async function HomePage({
           </div>
 
           {/* Stats strip */}
-          <dl className="mt-12 grid grid-cols-2 gap-6 border-t border-border pt-8 sm:grid-cols-3 lg:max-w-2xl">
+          <dl className="mt-14 grid grid-cols-2 gap-6 border-t border-border pt-8 sm:grid-cols-3 lg:max-w-2xl">
             <div>
-              <dt className="text-[11px] uppercase tracking-[0.14em] text-ink-mute">
+              <dt className="text-[11px] uppercase tracking-[0.16em] text-ink-mute">
                 {t("home.statsTotal")}
               </dt>
-              <dd className="mt-1 font-semibold tracking-tight tabular-nums text-ink" style={{ fontSize: "clamp(1.75rem, 3vw, 2.25rem)" }}>
+              <dd
+                className="mt-1.5 font-semibold tracking-[-0.02em] tabular-nums text-ink"
+                style={{ fontSize: "clamp(1.75rem, 3vw, 2.25rem)" }}
+              >
                 {totalFmt}
               </dd>
             </div>
             <div className="sm:col-span-2">
-              <dt className="text-[11px] uppercase tracking-[0.14em] text-ink-mute">
+              <dt className="text-[11px] uppercase tracking-[0.16em] text-ink-mute">
                 {t("home.statsCategory")}
               </dt>
               <dd className="mt-2 flex flex-wrap gap-1.5">
@@ -115,8 +118,10 @@ export default async function HomePage({
                     key={cat}
                     className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-xs text-ink-soft"
                   >
-                    <span className="font-medium text-ink capitalize">{cat}</span>
-                    <span className="text-ink-mute tabular-nums">
+                    <span className="font-medium capitalize text-ink">
+                      {cat}
+                    </span>
+                    <span className="tabular-nums text-ink-mute">
                       {new Intl.NumberFormat(locale).format(count)}
                     </span>
                   </span>
@@ -171,8 +176,9 @@ export default async function HomePage({
 }
 
 /**
- * Subtle, non-generic hero backdrop: a soft diagonal gradient with a thin
- * hairline wash. Uses CSS only so it's zero-cost and respects dark mode.
+ * Subtle, non-generic hero backdrop. A quiet warm wash at top-right with
+ * a hairline fade to the muted surface so the stats strip sits on a
+ * different plane from the hero. Pure CSS, dark-mode safe via color-mix.
  */
 function HeroBackdrop() {
   return (
@@ -181,7 +187,7 @@ function HeroBackdrop() {
       className="pointer-events-none absolute inset-0 -z-10"
       style={{
         backgroundImage:
-          "radial-gradient(1200px 400px at 85% -10%, color-mix(in oklab, var(--color-chip-ko-bg) 55%, transparent), transparent 60%), linear-gradient(180deg, transparent, color-mix(in oklab, var(--color-surface-muted) 60%, transparent) 95%)",
+          "radial-gradient(900px 340px at 92% -8%, color-mix(in oklab, var(--color-chip-ko-bg) 65%, transparent), transparent 65%), linear-gradient(180deg, transparent 70%, color-mix(in oklab, var(--color-surface-muted) 45%, transparent) 100%)",
       }}
     />
   );

@@ -49,8 +49,8 @@ export async function JobCard({
   return (
     <article
       className={cn(
-        "group relative flex flex-col gap-3 rounded-xl border border-border bg-surface p-5 transition-all",
-        "hover:border-border-strong hover:shadow-[0_6px_30px_-18px_rgba(0,0,0,0.25)]",
+        "group relative flex h-full flex-col gap-3 rounded-xl border border-border bg-surface p-5 transition-[border-color,box-shadow,transform]",
+        "hover:border-border-strong hover:shadow-[0_8px_28px_-18px_rgba(0,0,0,0.22)]",
         className,
       )}
     >
@@ -62,11 +62,13 @@ export async function JobCard({
 
       <div className="relative z-10 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="line-clamp-2 font-semibold leading-tight tracking-tight text-ink">
+          <h3 className="line-clamp-2 text-[15px] font-semibold leading-[1.3] tracking-[-0.01em] text-ink">
             {job.title}
           </h3>
           {job.company && (
-            <p className="mt-1 truncate text-sm text-ink-soft">{job.company}</p>
+            <p className="mt-1 truncate text-[13px] text-ink-soft">
+              {job.company}
+            </p>
           )}
         </div>
         <LanguageChip
@@ -76,9 +78,9 @@ export async function JobCard({
         />
       </div>
 
-      <div className="relative z-10 flex flex-wrap items-center gap-x-3 gap-y-1 text-[13px] text-ink-mute">
+      <div className="relative z-10 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12.5px] text-ink-mute">
         {location && <span className="truncate">{location}</span>}
-        {(location && (salary || posted)) && <DotSep />}
+        {location && (salary || posted) && <DotSep />}
         {salary ? (
           <span className="font-medium text-ink-soft">{salary}</span>
         ) : (
@@ -86,17 +88,17 @@ export async function JobCard({
             <span className="italic">{t("card.salaryUnavailable")}</span>
           )
         )}
-        {(salary && posted) && <DotSep />}
+        {salary && posted && <DotSep />}
         <span>{posted}</span>
       </div>
 
       {variant === "default" && (
-        <div className="relative z-10 mt-auto flex items-center justify-between pt-2 text-[11px] text-ink-mute">
+        <div className="relative z-10 mt-auto flex items-center justify-between pt-2 text-[10.5px] text-ink-mute">
           <span className="uppercase tracking-[0.14em]">{sourceLabel}</span>
           <svg
             aria-hidden
             viewBox="0 0 12 12"
-            className="size-3 opacity-0 transition-opacity group-hover:opacity-100"
+            className="size-3 opacity-0 transition-all group-hover:translate-x-0.5 group-hover:opacity-100"
           >
             <path
               d="M3 2 L9 6 L3 10"
