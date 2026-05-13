@@ -1,36 +1,127 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Koreer / 코리어
 
-## Getting Started
+A fast, no-auth job-search website for Korean speakers in the US. Ships only listings posted within the last 60 days and talks to the `koreaJobApiV2` REST API.
 
-First, run the development server:
+- **Stack:** Next.js 16 (App Router) · React 19 · Tailwind v4 · TypeScript · next-intl · zod
+- **Locales:** `ko` (default) and `en`, prefix routing (`/ko/...`, `/en/...`)
+- **API:** [`koreaJobApiV2`](https://github.com/dwk601/koreaJobApiV2) (read-only, FastAPI + Meilisearch + Postgres)
+
+## Getting started
 
 ```bash
+cp .env.example .env.local
+# fill in API_BASE_URL + NEXT_PUBLIC_SITE_URL
+
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open `http://localhost:3000` — redirects to `/ko`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Command | Purpose |
+|---------|---------|
+| `npm run dev` | Next.js dev server with Turbopack |
+| `npm run build` | Production build (uses `output: 'standalone'`) |
+| `npm start` | Run the production server from `.next` |
+| `npm run lint` | ESLint (`eslint-config-next`) |
+| `npm test` | Vitest unit suite |
+| `npm run test:watch` | Vitest watch mode |
 
-## Learn More
+### Environment variables
 
-To learn more about Next.js, take a look at the following resources:
+See [`.env.example`](./.env.example).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Var | Required | Notes |
+|-----|----------|-------|
+| `API_BASE_URL` | yes | Server-only base URL for `koreaJobApiV2`. |
+| `NEXT_PUBLIC_SITE_URL` | yes (prod) | Absolute site URL — used for canonical links, sitemap, OG tags. |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Project structure
 
-## Deploy on Vercel
+```
+app/
+  [locale]/
+    layout.tsx, page.tsx          # locale layout + home hero
+    jobs/page.tsx, loading.tsx    # list + filters + pagination
+    jobs/[id]/page.tsx            # detail + JSON-LD + apply
+    error.tsx                     # locale-level error boundary
+    opengraph-image.tsx           # dynamic OG image
+  api/suggest/route.ts            # /api/suggest proxy
+  robots.ts, sitemap.ts           # locale-aware SEO
+  global-error.tsx, not-found.tsx
+components/
+  layout/   header, header-nav, footer, locale-switcher
+  search/   search-bar (combobox), filter-sidebar, sort-select, active-filter-chips
+  jobs/     job-card, pagination
+  ui/       chip (language), empty-state
+lib/
+  api/      client (fetch wrapper), schemas (zod), jobs (typed callers)
+  i18n/     routing, request, navigation
+  url/      search-params (parse / serialize / toggle)
+  date.ts, format.ts, salary-bucket.ts, cn.ts
+messages/   ko.json, en.json
+proxy.ts    next-intl routing (Next.js 16 replaces middleware.ts)
+tests/      vitest unit suites
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Dockerize & deploy to Coolify
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The app builds a minimal Node server via Next.js `output: 'standalone'`.
+
+### Local container test
+
+```bash
+docker build \
+  --build-arg NEXT_PUBLIC_SITE_URL=https://jobs.example.com \
+  -t koreer-web .
+
+docker run --rm -p 3000:3000 \
+  -e API_BASE_URL=https://api-srku356jbc5fqtrtwff3j3pd.50.146.245.162.sslip.io \
+  -e NEXT_PUBLIC_SITE_URL=http://localhost:3000 \
+  koreer-web
+```
+
+Then curl-smoke the container:
+
+```bash
+curl -sI http://localhost:3000/        # 307 -> /ko
+curl -s  http://localhost:3000/ko      | head -20
+curl -s  http://localhost:3000/robots.txt
+curl -s  http://localhost:3000/sitemap.xml | head -20
+```
+
+### Coolify deploy
+
+Following the same pattern as `koreaJobApiV2`:
+
+1. **Create the application** — Coolify UI → `+ New` → **Application** → *Dockerfile*. Point at this repo, branch `main`, build context `.`, dockerfile `Dockerfile`.
+
+2. **Environment variables** — under the app's **Environment** tab:
+
+   | Variable | Value |
+   |----------|-------|
+   | `API_BASE_URL` | Internal URL for apiV2 (e.g. `http://api:8000` on the shared Coolify network, or the managed resource's internal host) |
+   | `NEXT_PUBLIC_SITE_URL` | Public site URL (e.g. `https://jobs.yourdomain.com`) |
+   | `SERVICE_FQDN_WEB_3000` | Your public domain — leave blank for a generated `*.sslip.io` |
+
+3. **Deploy** — Coolify builds the image, runs `node server.js`, and Traefik auto-provisions TLS.
+
+4. **Verify:**
+
+   ```bash
+   curl -s https://<domain>/         # redirects to /ko
+   curl -sI https://<domain>/robots.txt
+   curl -s  https://<domain>/sitemap.xml | head -20
+   ```
+
+### Notes
+
+- The `/api/suggest` route handler proxies the upstream `/api/v1/jobs/suggest` so the public API base URL is never exposed to the client.
+- Every list/facet request silently injects `post_date_from = today − 60 days` — freshness is enforced at the API-client layer, so every page in the app benefits.
+- Sitemap includes up to 200 freshest detail URLs with full `<xhtml:link rel="alternate" hreflang="..."/>` pairs and `x-default` → `/ko`.
+
+## License
+
+Proprietary — not for redistribution.
