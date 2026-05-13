@@ -1,26 +1,105 @@
 @import "tailwindcss";
 
+/*
+ * Design tokens for Koreer — restrained editorial palette tuned for
+ * mixed Korean + Latin typography. One confident accent (ink) with muted
+ * chromatic chips for the `language` facet.
+ */
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-bg: #fafaf7;
+  --color-surface: #ffffff;
+  --color-surface-muted: #f2efe8;
+  --color-border: rgba(23, 23, 23, 0.08);
+  --color-border-strong: rgba(23, 23, 23, 0.16);
+  --color-ink: #141311;
+  --color-ink-soft: #3b3a37;
+  --color-ink-mute: #6f6d67;
+  --color-accent: #1c2b2b;
+  --color-accent-ink: #f6f5ef;
+  --color-chip-ko-bg: #f0e9d8;
+  --color-chip-ko-ink: #5c4a12;
+  --color-chip-en-bg: #e3ecec;
+  --color-chip-en-ink: #1b3939;
+  --color-chip-bi-bg: #ecebf5;
+  --color-chip-bi-ink: #3b377a;
+  --color-focus: #8a7a28;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --color-bg: #0c0c0a;
+    --color-surface: #151513;
+    --color-surface-muted: #1e1d1a;
+    --color-border: rgba(240, 236, 225, 0.08);
+    --color-border-strong: rgba(240, 236, 225, 0.18);
+    --color-ink: #f0ecdf;
+    --color-ink-soft: #d4cfc0;
+    --color-ink-mute: #8e8a7e;
+    --color-accent: #f0ecdf;
+    --color-accent-ink: #0c0c0a;
+    --color-chip-ko-bg: #2b2513;
+    --color-chip-ko-ink: #e6d58d;
+    --color-chip-en-bg: #152424;
+    --color-chip-en-ink: #a7c7c5;
+    --color-chip-bi-bg: #1d1c2d;
+    --color-chip-bi-ink: #b2afdc;
+    --color-focus: #e6d58d;
   }
 }
 
+@theme inline {
+  --color-bg: var(--color-bg);
+  --color-surface: var(--color-surface);
+  --color-surface-muted: var(--color-surface-muted);
+  --color-border: var(--color-border);
+  --color-border-strong: var(--color-border-strong);
+  --color-ink: var(--color-ink);
+  --color-ink-soft: var(--color-ink-soft);
+  --color-ink-mute: var(--color-ink-mute);
+  --color-accent: var(--color-accent);
+  --color-accent-ink: var(--color-accent-ink);
+  --color-chip-ko-bg: var(--color-chip-ko-bg);
+  --color-chip-ko-ink: var(--color-chip-ko-ink);
+  --color-chip-en-bg: var(--color-chip-en-bg);
+  --color-chip-en-ink: var(--color-chip-en-ink);
+  --color-chip-bi-bg: var(--color-chip-bi-bg);
+  --color-chip-bi-ink: var(--color-chip-bi-ink);
+  --color-focus: var(--color-focus);
+
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+}
+
+html,
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-bg);
+  color: var(--color-ink);
+  font-family: var(--font-sans);
+}
+
+/* Let Korean text breathe a little more than Latin text inside the same type scale. */
+:lang(ko) {
+  letter-spacing: -0.005em;
+  word-break: keep-all;
+}
+
+:lang(en) {
+  letter-spacing: -0.011em;
+}
+
+/* One consistent focus ring everywhere. */
+*:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
 }

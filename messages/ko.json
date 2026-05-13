@@ -1,0 +1,104 @@
+{
+  "app": {
+    "name": "코리어",
+    "tagline": "한인을 위한 빠른 구직",
+    "description": "인디드·링크드인·한인 커뮤니티 사이트에서 모은 최근 60일 이내 구인 공고. 한 곳에서 빠르게."
+  },
+  "nav": {
+    "home": "홈",
+    "jobs": "채용정보",
+    "skipToContent": "본문으로 건너뛰기"
+  },
+  "locale": {
+    "switcher": "언어",
+    "ko": "한국어",
+    "en": "English"
+  },
+  "home": {
+    "heroEyebrow": "매일 새로 올라오는",
+    "heroTitle": "미주 한인 일자리",
+    "heroTitleAccent": "지금 열린 기회",
+    "heroSub": "최근 60일 이내에 등록된 신선한 채용 공고만 모았습니다. 키워드·지역·급여로 빠르게 찾아보세요.",
+    "searchPlaceholder": "직무, 회사, 지역으로 검색",
+    "searchSubmit": "검색",
+    "freshEyebrow": "최근 등록된 공고",
+    "freshTitle": "방금 올라온 일자리",
+    "freshCta": "전체 보기",
+    "statsEyebrow": "실시간 통계",
+    "statsTotal": "총 공고",
+    "statsCategory": "인기 직군",
+    "statsLanguage": "사용 언어"
+  },
+  "jobs": {
+    "pageTitle": "채용정보",
+    "pageSub": "최근 60일 이내 공고 · {count}건",
+    "noResultsTitle": "조건에 맞는 공고가 없어요",
+    "noResultsSub": "필터를 줄여서 다시 검색해 보세요.",
+    "clearFilters": "필터 초기화",
+    "resultsCount": "{count}건",
+    "searchLabel": "공고 검색",
+    "searchPlaceholder": "직무, 회사, 지역",
+    "sort": {
+      "label": "정렬",
+      "relevance": "관련도순",
+      "newest": "최신순",
+      "salary_high": "급여 높은 순",
+      "salary_low": "급여 낮은 순",
+      "company_az": "회사명 가나다순"
+    },
+    "filter": {
+      "title": "필터",
+      "source": "출처",
+      "language": "공고 언어",
+      "job_category": "직군",
+      "location_state": "지역 (주)",
+      "salary_bucket": "급여 구간",
+      "language.korean": "한국어",
+      "language.english": "영어",
+      "language.bilingual": "이중 언어",
+      "salary.free": "급여 미기재",
+      "salary.under_40k": "연 4만 달러 미만",
+      "salary.40k_80k": "연 4만~8만 달러",
+      "salary.80k_120k": "연 8만~12만 달러",
+      "salary.over_120k": "연 12만 달러 이상"
+    },
+    "pagination": {
+      "next": "다음 페이지",
+      "first": "처음으로"
+    },
+    "card": {
+      "postedAgo": "{days}일 전",
+      "postedToday": "오늘",
+      "salaryUnavailable": "급여 미기재",
+      "languageChip": "공고 언어"
+    },
+    "suggest": {
+      "empty": "제안이 없습니다",
+      "loading": "검색 중..."
+    }
+  },
+  "detail": {
+    "postedOn": "등록일",
+    "source": "출처",
+    "location": "근무 지역",
+    "salary": "급여",
+    "language": "공고 언어",
+    "category": "직군",
+    "applyExternal": "지원하기",
+    "applyNote": "외부 사이트로 이동합니다",
+    "backToList": "목록으로"
+  },
+  "error": {
+    "generalTitle": "잠시 문제가 발생했어요",
+    "generalSub": "잠시 후 다시 시도해 주세요.",
+    "retry": "다시 시도",
+    "notFoundTitle": "페이지를 찾을 수 없습니다",
+    "notFoundJobTitle": "해당 공고를 찾을 수 없습니다",
+    "notFoundJobSub": "삭제되었거나 만료된 공고일 수 있습니다.",
+    "home": "홈으로"
+  },
+  "footer": {
+    "copyright": "© {year} Koreer",
+    "tagline": "한인을 위한 구직 검색"
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "app": {
+    "name": "Koreer",
+    "tagline": "Job search for Korean speakers in the US",
+    "description": "Fresh openings from Indeed, LinkedIn, and Korean community sites — posted within the last 60 days. One place, fast."
+  },
+  "nav": {
+    "home": "Home",
+    "jobs": "Jobs",
+    "skipToContent": "Skip to content"
+  },
+  "locale": {
+    "switcher": "Language",
+    "ko": "한국어",
+    "en": "English"
+  },
+  "home": {
+    "heroEyebrow": "Fresh every day",
+    "heroTitle": "Korean-American jobs",
+    "heroTitleAccent": "open right now",
+    "heroSub": "Only listings posted in the last 60 days. Search by title, company, or city in seconds.",
+    "searchPlaceholder": "Title, company, or city",
+    "searchSubmit": "Search",
+    "freshEyebrow": "Recently posted",
+    "freshTitle": "Just added",
+    "freshCta": "View all",
+    "statsEyebrow": "Live stats",
+    "statsTotal": "Total jobs",
+    "statsCategory": "Top categories",
+    "statsLanguage": "By language"
+  },
+  "jobs": {
+    "pageTitle": "Jobs",
+    "pageSub": "Posted within the last 60 days · {count} results",
+    "noResultsTitle": "No jobs match your filters",
+    "noResultsSub": "Try clearing a filter or broadening your search.",
+    "clearFilters": "Clear filters",
+    "resultsCount": "{count} results",
+    "searchLabel": "Search jobs",
+    "searchPlaceholder": "Title, company, or city",
+    "sort": {
+      "label": "Sort",
+      "relevance": "Relevance",
+      "newest": "Newest",
+      "salary_high": "Salary (high)",
+      "salary_low": "Salary (low)",
+      "company_az": "Company A–Z"
+    },
+    "filter": {
+      "title": "Filters",
+      "source": "Source",
+      "language": "Listing language",
+      "job_category": "Category",
+      "location_state": "State",
+      "salary_bucket": "Salary",
+      "language.korean": "Korean",
+      "language.english": "English",
+      "language.bilingual": "Bilingual",
+      "salary.free": "Not listed",
+      "salary.under_40k": "Under $40K",
+      "salary.40k_80k": "$40K–$80K",
+      "salary.80k_120k": "$80K–$120K",
+      "salary.over_120k": "Over $120K"
+    },
+    "pagination": {
+      "next": "Next page",
+      "first": "Back to first"
+    },
+    "card": {
+      "postedAgo": "{days}d ago",
+      "postedToday": "Today",
+      "salaryUnavailable": "Salary not listed",
+      "languageChip": "Language"
+    },
+    "suggest": {
+      "empty": "No suggestions",
+      "loading": "Searching..."
+    }
+  },
+  "detail": {
+    "postedOn": "Posted",
+    "source": "Source",
+    "location": "Location",
+    "salary": "Salary",
+    "language": "Language",
+    "category": "Category",
+    "applyExternal": "Apply",
+    "applyNote": "You will leave Koreer",
+    "backToList": "Back to jobs"
+  },
+  "error": {
+    "generalTitle": "Something went wrong",
+    "generalSub": "Please try again in a moment.",
+    "retry": "Retry",
+    "notFoundTitle": "Page not found",
+    "notFoundJobTitle": "Job not found",
+    "notFoundJobSub": "This posting may have been removed or expired.",
+    "home": "Go home"
+  },
+  "footer": {
+    "copyright": "© {year} Koreer",
+    "tagline": "Job search for Korean speakers"
+  }
+}

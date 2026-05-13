@@ -32,6 +32,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +40,20 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# ai agents
+.kiro/
+skills-lock.json
+AGENTS.md
+CLAUDE.md
+.claude/
+.cursor/
+.cursorrules
+.cursorignore
+.aider*
+.windsurfrules
+.windsurf/
+.continue/
+.clinerules
+.github/copilot-instructions.md
+
