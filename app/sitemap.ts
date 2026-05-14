@@ -41,13 +41,28 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Top-N freshest detail pages. If the API is unreachable (build-time in the
   // sandbox, for instance) fall back to the static entries only — better
   // partial sitemap than a failed deploy.
+  // The upstream API caps `limit` at 100, so page through with the returned
+  // cursor until we have enough or run out of fresh listings.
+  const PER_PAGE = 100;
   let detailEntries: MetadataRoute.Sitemap = [];
   try {
-    const list = await listJobs(
-      { limit: MAX_DETAIL_URLS, sort: "newest" },
-      { revalidate: 300 },
-    );
-    detailEntries = list.items.flatMap((job) => {
+    const items: Awaited<ReturnType<typeof listJobs>>["items"] = [];
+    let cursor: string | undefined;
+    while (items.length < MAX_DETAIL_URLS) {
+      const remaining = MAX_DETAIL_URLS - items.length;
+      const list = await listJobs(
+        {
+          limit: Math.min(PER_PAGE, remaining),
+          sort: "newest",
+          cursor,
+        },
+        { revalidate: 300 },
+      );
+      items.push(...list.items);
+      if (!list.next_cursor || list.items.length === 0) break;
+      cursor = list.next_cursor;
+    }
+    detailEntries = items.flatMap((job) => {
       const lastModified = job.post_date
         ? new Date(job.post_date + "T00:00:00Z")
         : now;

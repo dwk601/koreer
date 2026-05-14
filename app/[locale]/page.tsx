@@ -68,7 +68,7 @@ export default async function HomePage({
   const topCategories = Object.entries(stats.by_category)
     .sort((a, b) => b[1] - a[1])
     .slice(0, 3);
-  const totalFmt = new Intl.NumberFormat(locale).format(stats.total_jobs);
+  const totalFmt = formatTotal(stats.total_jobs, locale);
 
   return (
     <div className="relative">
@@ -173,6 +173,16 @@ export default async function HomePage({
       </section>
     </div>
   );
+}
+
+/** Round large totals to nearest thousand with "+" suffix so the hero
+ *  count stays fresh as the DB grows.  E.g. 26777 → "26,000+". */
+function formatTotal(count: number, locale: string): string {
+  if (count >= 10000) {
+    const rounded = Math.floor(count / 1000) * 1000;
+    return `${new Intl.NumberFormat(locale).format(rounded)}+`;
+  }
+  return new Intl.NumberFormat(locale).format(count);
 }
 
 /**

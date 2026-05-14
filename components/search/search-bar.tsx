@@ -60,6 +60,14 @@ export function SearchBar({
     return () => document.removeEventListener("mousedown", onDocClick);
   }, []);
 
+  // Sync the input with `initialQuery` when it changes (e.g. when the URL `q`
+  // param changes from a parent navigation like clearing an active filter
+  // chip). Skip while the input is focused so we don't stomp on typing.
+  useEffect(() => {
+    if (document.activeElement === inputRef.current) return;
+    setValue(initialQuery);
+  }, [initialQuery]);
+
   const runFetch = useCallback(async (q: string) => {
     abortRef.current?.abort();
     if (q.length < MIN_CHARS) {
@@ -99,6 +107,10 @@ export function SearchBar({
   function submit(q: string) {
     const trimmed = q.trim();
     setOpen(false);
+    // Reflect the submitted query in the input immediately so the textbox
+    // matches the URL even when the user clicked a suggestion (which keeps
+    // focus on the input via preventDefault).
+    setValue(trimmed);
     startTransition(() => {
       const qs = trimmed ? `?q=${encodeURIComponent(trimmed)}` : "";
       router.push(("/jobs" + qs) as "/jobs");

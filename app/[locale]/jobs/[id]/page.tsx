@@ -96,11 +96,16 @@ export default async function JobDetailPage({ params }: Props) {
     job.location.raw ||
     "";
   const postedRelative = formatPostedRelative(job.post_date, lang);
-  const postedAbsolute = new Intl.DateTimeFormat(lang, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-  }).format(new Date(job.post_date + "T00:00:00Z"));
+  const postedAbsolute = job.post_date
+    ? new Intl.DateTimeFormat(lang, {
+        year: "numeric",
+        month: "short",
+        day: "numeric",
+        // post_date is a date-only string at UTC midnight; pin the formatter to
+        // UTC so users west of UTC don't see the previous day.
+        timeZone: "UTC",
+      }).format(new Date(job.post_date + "T00:00:00Z"))
+    : "";
   const daysOld = daysSincePosted(job.post_date);
   const languageLabel = LANGUAGE_LABEL[job.language] ?? job.language;
   const sourceLabel = SOURCE_LABEL[job.source] ?? job.source;
@@ -135,7 +140,7 @@ export default async function JobDetailPage({ params }: Props) {
         <div className="flex flex-wrap items-center gap-2">
           <LanguageChip language={job.language} label={languageLabel} />
           <Badge tone="muted">{sourceLabel}</Badge>
-          {daysOld <= 7 && (
+          {daysOld != null && daysOld <= 7 && (
             <Badge tone="accent">
               {daysOld === 0 ? t("jobs.card.postedToday") : postedRelative}
             </Badge>
@@ -160,7 +165,11 @@ export default async function JobDetailPage({ params }: Props) {
           />
           <MetaRow
             label={tDetail("postedOn")}
-            value={`${postedRelative} · ${postedAbsolute}`}
+            value={
+              job.post_date
+                ? `${postedRelative} · ${postedAbsolute}`
+                : "—"
+            }
           />
           <MetaRow label={tDetail("source")} value={sourceLabel} />
           {categories.length > 0 && (

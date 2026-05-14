@@ -67,7 +67,15 @@ export interface ApiFetchOptions {
   tags?: string[];
   /** Allow the caller to abort. */
   signal?: AbortSignal;
+  /**
+   * Per-request timeout in milliseconds. Defaults to 8000ms. The page will
+   * fall back to its empty/error state instead of hanging when upstream is
+   * slow or unreachable. Pass `false` to disable.
+   */
+  timeoutMs?: number | false;
 }
+
+const DEFAULT_TIMEOUT_MS = 8_000;
 
 /**
  * Low-level fetch helper. Prefer the named functions in `./jobs.ts`.
@@ -81,6 +89,21 @@ export async function apiFetch<T>(
   const url = buildUrl(base, path, options.query);
   const requestId = newRequestId();
 
+  // Combine an internal timeout with any caller-provided AbortSignal so
+  // requests don't hang forever when upstream is slow or unreachable.
+  const timeoutMs =
+    options.timeoutMs === false
+      ? 0
+      : (options.timeoutMs ?? DEFAULT_TIMEOUT_MS);
+  const timeoutCtrl = new AbortController();
+  const timer =
+    timeoutMs > 0
+      ? setTimeout(() => timeoutCtrl.abort(new Error("Request timeout")), timeoutMs)
+      : null;
+  const signal = options.signal
+    ? anySignal([options.signal, timeoutCtrl.signal])
+    : timeoutCtrl.signal;
+
   const init: RequestInit & { next?: { revalidate?: number; tags?: string[] } } =
     {
       method: "GET",
@@ -88,7 +111,7 @@ export async function apiFetch<T>(
         accept: "application/json",
         "x-request-id": requestId,
       },
-      signal: options.signal,
+      signal,
       next: {
         revalidate:
           options.revalidate === false
@@ -107,9 +130,15 @@ export async function apiFetch<T>(
   try {
     res = await fetch(url, init);
   } catch (e) {
+    if (timer) clearTimeout(timer);
+    const aborted =
+      (e as Error)?.name === "AbortError" || timeoutCtrl.signal.aborted;
     throw new ApiError({
       status: 0,
-      message: `Network error reaching ${url}: ${(e as Error).message}`,
+      message: aborted
+        ? `Request to ${url} timed out after ${timeoutMs}ms`
+        : `Network error reaching ${url}: ${(e as Error).message}`,
+      code: aborted ? "TIMEOUT" : undefined,
       requestId,
     });
   }
@@ -124,6 +153,8 @@ export async function apiFetch<T>(
     await new Promise((r) => setTimeout(r, waitMs));
     res = await fetch(url, init);
   }
+
+  if (timer) clearTimeout(timer);
 
   if (!res.ok) {
     await throwApiError(res, requestId);
@@ -141,6 +172,22 @@ export async function apiFetch<T>(
     });
   }
   return parsed.data;
+}
+
+/**
+ * Combine multiple AbortSignals into one that aborts as soon as any input
+ * does. Avoids relying on `AbortSignal.any` for compatibility.
+ */
+function anySignal(signals: AbortSignal[]): AbortSignal {
+  const ctrl = new AbortController();
+  for (const s of signals) {
+    if (s.aborted) {
+      ctrl.abort(s.reason);
+      break;
+    }
+    s.addEventListener("abort", () => ctrl.abort(s.reason), { once: true });
+  }
+  return ctrl.signal;
 }
 
 async function throwApiError(res: Response, requestId: string): Promise<never> {

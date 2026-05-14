@@ -8,6 +8,7 @@ import { cn } from "@/lib/cn";
 import type { Facets } from "@/lib/api/schemas";
 import type { ListJobsParams } from "@/lib/api/jobs";
 import { toQueryString } from "@/lib/url/search-params";
+import { formatSourceLabel } from "@/lib/sources";
 import {
   SALARY_BUCKETS,
   bucketToRange,
@@ -17,25 +18,17 @@ import {
 
 const MAX_OPTIONS_COLLAPSED = 8;
 
-const SOURCE_LABEL: Record<string, string> = {
-  gtksa: "GTKSA",
-  linkedin: "LinkedIn",
-  indeed: "Indeed",
-  jobkoreausa: "JobKoreaUSA",
-  workingus: "WorkingUS",
-  wowseattle: "Wow Seattle",
-  radiokorea: "Radio Korea",
-  koreadaily: "Korea Daily",
-};
-
 type Props = {
   params: ListJobsParams;
   facets: Facets;
+  allSources?: Record<string, number>;
   className?: string;
 };
 
-export function FilterSidebar({ params, facets, className }: Props) {
+export function FilterSidebar({ params, facets, allSources, className }: Props) {
   const t = useTranslations("jobs.filter");
+  const tLang = useTranslations("jobs.languageLabel");
+  const tSalary = useTranslations("jobs.salaryLabel");
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
@@ -102,10 +95,16 @@ export function FilterSidebar({ params, facets, className }: Props) {
       {/* ---- Source ---- */}
       <FacetSection title={t("source")}>
         <CheckboxList
-          options={sortEntries(facets.source)}
+          options={
+            allSources
+              ? sortKeepZeros(
+                  mergeSources(allSources, facets.source),
+                )
+              : sortEntries(facets.source)
+          }
           selected={params.source ?? []}
           onToggle={(v) => toggleMulti("source", v)}
-          labelFor={(v) => SOURCE_LABEL[v] ?? v}
+          labelFor={(v) => formatSourceLabel(v)}
         />
       </FacetSection>
 
@@ -121,7 +120,7 @@ export function FilterSidebar({ params, facets, className }: Props) {
             )
           }
           labelFor={(v) =>
-            t(`language.${v}` as "language.korean" | "language.english" | "language.bilingual")
+            tLang(v as "korean" | "english" | "bilingual")
           }
         />
       </FacetSection>
@@ -172,12 +171,12 @@ export function FilterSidebar({ params, facets, className }: Props) {
                       onChange={() => setSalaryBucket(bucket)}
                     />
                     <span className="truncate">
-                      {t(`salary.${bucket}` as
-                        | "salary.free"
-                        | "salary.under_40k"
-                        | "salary.40k_80k"
-                        | "salary.80k_120k"
-                        | "salary.over_120k")}
+                      {tSalary(bucket as
+                        | "free"
+                        | "under_40k"
+                        | "40k_80k"
+                        | "80k_120k"
+                        | "over_120k")}
                     </span>
                   </span>
                   <span className="tabular-nums text-[12px] text-ink-mute">
@@ -359,6 +358,33 @@ function sortEntries(record: Record<string, number>): Array<[string, number]> {
   return Object.entries(record)
     .filter(([, count]) => count > 0)
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+}
+
+/** Like sortEntries but keeps zero-count entries. */
+function sortKeepZeros(
+  record: Record<string, number>,
+): Array<[string, number]> {
+  return Object.entries(record).sort(
+    (a, b) => b[1] - a[1] || a[0].localeCompare(b[0]),
+  );
+}
+
+/** Merge the full source list with query-scoped facet counts so every
+ *  source is always visible, even when it has zero matches for the
+ *  current query.  The result is sorted by the facet count descending,
+ *  with zero-count sources at the bottom in alphabetical order. */
+function mergeSources(
+  all: Record<string, number>,
+  scoped: Record<string, number>,
+): Record<string, number> {
+  const merged: Record<string, number> = {};
+  for (const key of Object.keys(all)) {
+    merged[key] = scoped[key] ?? 0;
+  }
+  for (const key of Object.keys(scoped)) {
+    merged[key] ??= 0;
+  }
+  return merged;
 }
 
 function capitalize(s: string): string {

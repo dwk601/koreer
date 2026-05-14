@@ -52,15 +52,19 @@
       "language": "공고 언어",
       "job_category": "직군",
       "location_state": "지역 (주)",
-      "salary_bucket": "급여 구간",
-      "language.korean": "한국어",
-      "language.english": "영어",
-      "language.bilingual": "이중 언어",
-      "salary.free": "급여 미기재",
-      "salary.under_40k": "연 4만 달러 미만",
-      "salary.40k_80k": "연 4만~8만 달러",
-      "salary.80k_120k": "연 8만~12만 달러",
-      "salary.over_120k": "연 12만 달러 이상"
+      "salary_bucket": "급여 구간"
+    },
+    "languageLabel": {
+      "korean": "한국어",
+      "english": "영어",
+      "bilingual": "이중 언어"
+    },
+    "salaryLabel": {
+      "free": "급여 미기재",
+      "under_40k": "연 4만 달러 미만",
+      "40k_80k": "연 4만~8만 달러",
+      "80k_120k": "연 8만~12만 달러",
+      "over_120k": "연 12만 달러 이상"
     },
     "pagination": {
       "next": "다음 페이지",

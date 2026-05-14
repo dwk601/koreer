@@ -52,15 +52,19 @@
       "language": "Listing language",
       "job_category": "Category",
       "location_state": "State",
-      "salary_bucket": "Salary",
-      "language.korean": "Korean",
-      "language.english": "English",
-      "language.bilingual": "Bilingual",
-      "salary.free": "Not listed",
-      "salary.under_40k": "Under $40K",
-      "salary.40k_80k": "$40K–$80K",
-      "salary.80k_120k": "$80K–$120K",
-      "salary.over_120k": "Over $120K"
+      "salary_bucket": "Salary"
+    },
+    "languageLabel": {
+      "korean": "Korean",
+      "english": "English",
+      "bilingual": "Bilingual"
+    },
+    "salaryLabel": {
+      "free": "Not listed",
+      "under_40k": "Under $40K",
+      "40k_80k": "$40K–$80K",
+      "80k_120k": "$80K–$120K",
+      "over_120k": "Over $120K"
     },
     "pagination": {
       "next": "Next page",

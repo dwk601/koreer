@@ -4,17 +4,7 @@ import { Link } from "@/lib/i18n/navigation";
 import type { ListJobsParams } from "@/lib/api/jobs";
 import { toQueryString } from "@/lib/url/search-params";
 import { inferSalaryBucket } from "@/lib/salary-bucket";
-
-const SOURCE_LABEL: Record<string, string> = {
-  gtksa: "GTKSA",
-  linkedin: "LinkedIn",
-  indeed: "Indeed",
-  jobkoreausa: "JobKoreaUSA",
-  workingus: "WorkingUS",
-  wowseattle: "Wow Seattle",
-  radiokorea: "Radio Korea",
-  koreadaily: "Korea Daily",
-};
+import { formatSourceLabel } from "@/lib/sources";
 
 type ChipSpec = { label: string; removeParams: Partial<ListJobsParams> };
 
@@ -36,7 +26,7 @@ export async function ActiveFilterChips({
 
   for (const value of params.source ?? []) {
     chips.push({
-      label: SOURCE_LABEL[value] ?? value,
+      label: formatSourceLabel(value),
       removeParams: {
         source: (params.source ?? []).filter((v) => v !== value),
       },
@@ -46,10 +36,10 @@ export async function ActiveFilterChips({
   if (params.language) {
     chips.push({
       label: t(
-        `filter.language.${params.language}` as
-          | "filter.language.korean"
-          | "filter.language.english"
-          | "filter.language.bilingual",
+        `languageLabel.${params.language}` as
+          | "languageLabel.korean"
+          | "languageLabel.english"
+          | "languageLabel.bilingual",
       ),
       removeParams: { language: undefined },
     });
@@ -75,12 +65,12 @@ export async function ActiveFilterChips({
   if (activeBucket) {
     chips.push({
       label: t(
-        `filter.salary.${activeBucket}` as
-          | "filter.salary.free"
-          | "filter.salary.under_40k"
-          | "filter.salary.40k_80k"
-          | "filter.salary.80k_120k"
-          | "filter.salary.over_120k",
+        `salaryLabel.${activeBucket}` as
+          | "salaryLabel.free"
+          | "salaryLabel.under_40k"
+          | "salaryLabel.40k_80k"
+          | "salaryLabel.80k_120k"
+          | "salaryLabel.over_120k",
       ),
       removeParams: { salary_min: undefined, salary_max: undefined },
     });

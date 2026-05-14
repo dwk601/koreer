@@ -1,26 +1,43 @@
 import dns from "node:dns";
 
 // Sandbox-only: force all DNS lookups to the Tailscale IP for the Coolify host.
+const SERVER = "100.92.189.13";
+const HOST = "api-srku356jbc5fqtrtwff3j3pd.50.146.245.162.sslip.io";
+
 const origLookup = dns.lookup;
-(dns as unknown as { lookup: typeof dns.lookup }).lookup = ((
-  hostname: string,
-  opts: unknown,
-  cb?: unknown,
-) => {
+const origLookupP = dns.promises.lookup;
+
+dns.lookup = ((hostname: string, opts: unknown, cb?: unknown) => {
   const callback = (typeof opts === "function" ? opts : cb) as (
     e: Error | null,
     a: string,
     f: number,
   ) => void;
-  if (hostname.endsWith("sslip.io")) {
-    return callback(null, "100.92.189.13", 4);
+  if (hostname === HOST) {
+    if (opts && (opts as { all?: boolean }).all) {
+      return process.nextTick(callback, null, [{ address: SERVER, family: 4 }]);
+    }
+    return process.nextTick(callback, null, SERVER, 4);
   }
   return origLookup(hostname, opts as never, callback as never);
 }) as typeof dns.lookup;
 
+dns.promises.lookup = ((
+  hostname: string,
+  opts?: unknown,
+): Promise<dns.LookupAddress | dns.LookupAddress[]> => {
+  if (hostname === HOST) {
+    const result = { address: SERVER, family: 4 as const };
+    if (opts && (opts as { all?: boolean }).all) {
+      return Promise.resolve([result]);
+    }
+    return Promise.resolve(result);
+  }
+  return origLookupP(hostname, opts as never);
+}) as typeof dns.promises.lookup;
+
 // Traefik listens on :80 for this host; use http://.
-process.env.API_BASE_URL =
-  "http://api-srku356jbc5fqtrtwff3j3pd.50.146.245.162.sslip.io";
+process.env.API_BASE_URL = `http://${HOST}`;
 
 function assert(cond: unknown, msg: string) {
   if (!cond) {
@@ -46,7 +63,7 @@ async function main() {
   );
   assert(list.items.length > 0, `list returns ${list.items.length} items`);
   const age = daysSincePosted(list.items[0]!.post_date);
-  assert(age <= 60, `freshest item is ${age} days old (≤60)`);
+  assert(age != null && age <= 60, `freshest item is ${age}d old (≤60)`);
   console.log(
     "  sample:",
     list.items[0]?.title,

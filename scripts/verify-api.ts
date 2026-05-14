@@ -83,7 +83,7 @@ async function main() {
     assert(list.items.length > 0, `listJobs returns items (got ${list.items.length})`);
     const freshestDaysAgo = daysSincePosted(list.items[0]!.post_date);
     assert(
-      freshestDaysAgo <= 60,
+      freshestDaysAgo != null && freshestDaysAgo <= 60,
       `freshest item is within 60 days (${freshestDaysAgo}d)`,
     );
     console.log("  sample:", list.items[0]?.title, "·", list.items[0]?.source);
