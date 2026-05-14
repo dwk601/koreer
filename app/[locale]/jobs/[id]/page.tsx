@@ -4,10 +4,12 @@ import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Link } from "@/lib/i18n/navigation";
 import { ApiError } from "@/lib/api/client";
-import { getJob } from "@/lib/api/jobs";
+import { getJob, listJobs } from "@/lib/api/jobs";
 import type { JobDetail } from "@/lib/api/schemas";
 import { LanguageChip, Badge } from "@/components/ui/chip";
+import { JobCard } from "@/components/jobs/job-card";
 import { formatPostedRelative, formatSalary } from "@/lib/format";
+import { formatSourceLabel } from "@/lib/sources";
 import { daysSincePosted } from "@/lib/date";
 
 // Detail pages cache aggressively via the API client; no need to opt out.
@@ -18,17 +20,6 @@ const LANGUAGE_LABEL: Record<string, string> = {
   korean: "KO",
   english: "EN",
   bilingual: "KO · EN",
-};
-
-const SOURCE_LABEL: Record<string, string> = {
-  gtksa: "GTKSA",
-  linkedin: "LinkedIn",
-  indeed: "Indeed",
-  jobkoreausa: "JobKoreaUSA",
-  workingus: "WorkingUS",
-  wowseattle: "Wow Seattle",
-  radiokorea: "Radio Korea",
-  koreadaily: "Korea Daily",
 };
 
 async function loadJob(idStr: string): Promise<JobDetail | null> {
@@ -109,7 +100,7 @@ export default async function JobDetailPage({ params }: Props) {
     : "";
   const daysOld = daysSincePosted(job.post_date);
   const languageLabel = LANGUAGE_LABEL[job.language] ?? job.language;
-  const sourceLabel = SOURCE_LABEL[job.source] ?? job.source;
+  const sourceLabel = formatSourceLabel(job.source);
 
   const categories = (job.job_category ?? []).slice(0, 6);
   const description = job.description?.trim() ?? "";
@@ -147,10 +138,7 @@ export default async function JobDetailPage({ params }: Props) {
             </Badge>
           )}
         </div>
-        <h1
-          className="font-semibold tracking-tight text-balance"
-          style={{ fontSize: "clamp(1.75rem, 3.5vw, 2.5rem)", lineHeight: 1.1 }}
-        >
+        <h1 className="type-headline text-balance">
           {job.title}
         </h1>
         {job.company && (
@@ -229,12 +217,50 @@ export default async function JobDetailPage({ params }: Props) {
         </section>
       )}
 
+      {/* Related listings from the same source */}
+      <RelatedFromSource currentId={job.id} source={job.source} />
+
       {/* JSON-LD structured data for rich results */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJobPostingJsonLd(job)) }}
       />
     </div>
+  );
+}
+
+async function RelatedFromSource({
+  currentId,
+  source,
+}: {
+  currentId: number;
+  source: string;
+}) {
+  const t = await getTranslations("detail");
+  const sourceLabel = formatSourceLabel(source);
+
+  let items;
+  try {
+    const res = await listJobs({ source: [source], sort: "newest", limit: 4 });
+    items = res.items.filter((j) => j.id !== currentId).slice(0, 3);
+  } catch {
+    return null;
+  }
+
+  if (items.length < 2) return null;
+
+  return (
+    <section className="mt-14 border-t border-border pt-10">
+      <p className="type-label text-ink-mute">
+        {t("relatedEyebrow", { source: sourceLabel })}
+      </p>
+      <h2 className="mt-2 type-title">{t("relatedTitle")}</h2>
+      <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((job) => (
+          <JobCard key={job.id} job={job} />
+        ))}
+      </div>
+    </section>
   );
 }
 
@@ -249,7 +275,7 @@ function MetaRow({
 }) {
   return (
     <div className={wide ? "sm:col-span-2" : undefined}>
-      <dt className="text-[11px] uppercase tracking-[0.14em] text-ink-mute">
+      <dt className="type-label text-ink-mute">
         {label}
       </dt>
       <dd className="mt-0.5 text-ink">{value}</dd>

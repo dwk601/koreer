@@ -156,7 +156,7 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
               <li key={bucket}>
                 <label
                   className={cn(
-                    "group flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
+                    "group flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 type-caption transition-colors",
                     isActive
                       ? "bg-surface-muted text-ink"
                       : "text-ink-soft hover:bg-surface-muted/60 hover:text-ink",
@@ -179,7 +179,7 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
                         | "over_120k")}
                     </span>
                   </span>
-                  <span className="tabular-nums text-[12px] text-ink-mute">
+                  <span className="tabular-nums type-caption text-ink-mute">
                     {count.toLocaleString()}
                   </span>
                 </label>
@@ -209,7 +209,7 @@ function FacetSection({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-2 text-left text-[13px] font-semibold uppercase tracking-[0.08em] text-ink"
+        className="flex w-full items-center justify-between gap-2 text-left text-[13px] font-semibold uppercase tracking-[0.16em] text-ink"
         aria-expanded={open}
       >
         {title}
@@ -258,7 +258,7 @@ function CheckboxList({
             <li key={value}>
               <label
                 className={cn(
-                  "group flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
+                  "group flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 type-caption transition-colors",
                   isChecked
                     ? "bg-surface-muted text-ink"
                     : "text-ink-soft hover:bg-surface-muted/60 hover:text-ink",
@@ -273,7 +273,7 @@ function CheckboxList({
                   />
                   <span className="truncate">{labelFor(value)}</span>
                 </span>
-                <span className="tabular-nums text-[12px] text-ink-mute">
+                <span className="tabular-nums type-caption text-ink-mute">
                   {count.toLocaleString()}
                 </span>
               </label>
@@ -316,7 +316,7 @@ function RadioList({
             <li key={value}>
               <label
                 className={cn(
-                  "group flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 text-sm transition-colors",
+                  "group flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 type-caption transition-colors",
                   isActive
                     ? "bg-surface-muted text-ink"
                     : "text-ink-soft hover:bg-surface-muted/60 hover:text-ink",
@@ -331,7 +331,7 @@ function RadioList({
                   />
                   <span className="truncate">{labelFor(value)}</span>
                 </span>
-                <span className="tabular-nums text-[12px] text-ink-mute">
+                <span className="tabular-nums type-caption text-ink-mute">
                   {count.toLocaleString()}
                 </span>
               </label>

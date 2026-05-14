@@ -8,6 +8,7 @@ import {
   formatPostedRelative,
   formatSalary,
 } from "@/lib/format";
+import { formatSourceLabel } from "@/lib/sources";
 
 import { LanguageChip } from "@/components/ui/chip";
 
@@ -15,17 +16,6 @@ const LANGUAGE_LABEL: Record<string, string> = {
   korean: "KO",
   english: "EN",
   bilingual: "KO · EN",
-};
-
-const SOURCE_LABEL: Record<string, string> = {
-  gtksa: "GTKSA",
-  linkedin: "LinkedIn",
-  indeed: "Indeed",
-  jobkoreausa: "JobKoreaUSA",
-  workingus: "WorkingUS",
-  wowseattle: "Wow Seattle",
-  radiokorea: "Radio Korea",
-  koreadaily: "Korea Daily",
 };
 
 export async function JobCard({
@@ -44,7 +34,7 @@ export async function JobCard({
   const salary = formatSalary(job);
   const posted = formatPostedRelative(job.post_date, locale);
   const languageLabel = LANGUAGE_LABEL[job.language] ?? job.language;
-  const sourceLabel = SOURCE_LABEL[job.source] ?? job.source;
+  const sourceLabel = formatSourceLabel(job.source);
 
   return (
     <article
@@ -62,7 +52,7 @@ export async function JobCard({
 
       <div className="relative z-10 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="line-clamp-2 text-[15px] font-semibold leading-[1.3] tracking-[-0.01em] text-ink">
+          <h3 className="line-clamp-2 type-card-title text-ink">
             {job.title}
           </h3>
           {job.company && (
@@ -78,27 +68,27 @@ export async function JobCard({
         />
       </div>
 
-      <div className="relative z-10 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12.5px] text-ink-mute">
+      <div className="relative z-10 flex flex-wrap items-center gap-x-2.5 gap-y-1 type-caption text-ink-mute">
         {location && <span className="truncate">{location}</span>}
         {location && <DotSep />}
         {salary ? (
           <span className="font-medium text-ink-soft">{salary}</span>
         ) : (
           variant === "default" && (
-            <span className="italic">{t("card.salaryUnavailable")}</span>
+            <span className="text-ink-mute/80">{t("card.salaryUnavailable")}</span>
           )
         )}
         {salary && <DotSep />}
         {posted != null ? (
           <span>{posted}</span>
         ) : (
-          <span className="italic">{t("card.dateUnknown")}</span>
+          <span className="text-ink-mute/80">{t("card.dateUnknown")}</span>
         )}
       </div>
 
       {variant === "default" && (
-        <div className="relative z-10 mt-auto flex items-center justify-between pt-2 text-[10.5px] text-ink-mute">
-          <span className="uppercase tracking-[0.14em]">{sourceLabel}</span>
+        <div className="relative z-10 mt-auto flex items-center justify-between pt-2 type-label text-ink-mute">
+          <span className="type-label">{sourceLabel}</span>
           <svg
             aria-hidden
             viewBox="0 0 12 12"
