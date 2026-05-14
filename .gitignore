@@ -57,3 +57,8 @@ CLAUDE.md
 .clinerules
 .github/copilot-instructions.md
 
+
+# Playwright
+playwright-report/
+test-results/
+.playwright-cli/
