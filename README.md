@@ -107,7 +107,9 @@ curl -s  http://localhost:3000/robots.txt
 ### Notes
 
 - The `/api/suggest` route handler proxies the upstream `/api/v1/jobs/suggest` so the public API base URL is never exposed to the client.
-- Every list/facet request silently injects `post_date_from = today − 60 days` — freshness is enforced at the API-client layer, so every page in the app benefits.
+- **Freshness enforcement:** Every `listJobs` and `getFacets` request silently injects `post_date_from = today − 60 days` unless the caller explicitly overrides it. This is enforced at the API-client layer, so every page in the app benefits. `getJob`, `getStats`, and `suggestJobs` are unaffected.
+- **Count behavior:** The home page hero count (`stats.total_jobs`) is the full-corpus count. The `/jobs` page count (`list.total_estimated`) is filter- and freshness-aware. This is intentional — the hero showcases the full database size, while the list reflects what users can actually find.
+- **Performance:** The `/jobs` page calls `listJobs` once (sidebar and results share the response via Next's fetch cache) instead of making a separate `getFacets` call.
 - Sitemap includes up to 200 freshest detail URLs with full `<xhtml:link rel="alternate" hreflang="..."/>` pairs and `x-default` → `/ko`.
 
 ## License
