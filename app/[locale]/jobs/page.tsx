@@ -9,7 +9,7 @@ import { FilterSidebar } from "@/components/search/filter-sidebar";
 import { SortSelect } from "@/components/search/sort-select";
 import { ActiveFilterChips } from "@/components/search/active-filter-chips";
 import { Link } from "@/lib/i18n/navigation";
-import { listJobs, getFacets } from "@/lib/api/jobs";
+import { listJobs, getStats } from "@/lib/api/jobs";
 import {
   hasActiveFilters,
   parseListParams,
@@ -19,6 +19,11 @@ import {
 import type { ListResponse, Facets } from "@/lib/api/schemas";
 
 export const dynamic = "force-dynamic";
+
+// Performance: SidebarFetcher and Results both call listJobs(parsed) with identical
+// params. Next.js 16's fetch cache deduplicates these into a single upstream request.
+// The sidebar reads .facets from the list response instead of making a separate
+// /api/v1/jobs/facets call. This saves one round-trip per page render.
 
 type Props = {
   params: Promise<{ locale: string }>;
@@ -92,9 +97,16 @@ async function SidebarFetcher({
   parsed: ReturnType<typeof parseListParams>;
 }) {
   let facets: Facets;
+  let allSources: Record<string, number> | undefined;
   try {
-    const r = await getFacets(parsed);
-    facets = r.facets;
+    // listJobs is deduped with the Results boundary's identical call via Next's
+    // fetch cache — no separate /api/v1/jobs/facets round-trip needed.
+    const [listRes, statsRes] = await Promise.all([
+      listJobs(parsed),
+      getStats(),
+    ]);
+    facets = listRes.facets;
+    allSources = statsRes.by_source;
   } catch {
     facets = {
       source: {},
@@ -106,7 +118,7 @@ async function SidebarFetcher({
   }
   return (
     <div className="lg:sticky lg:top-24 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto lg:pr-2">
-      <FilterSidebar params={parsed} facets={facets} />
+      <FilterSidebar params={parsed} facets={facets} allSources={allSources} />
     </div>
   );
 }
