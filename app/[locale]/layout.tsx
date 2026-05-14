@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Geist } from "next/font/google";
+import localFont from "next/font/local";
 import { NextIntlClientProvider, hasLocale } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { notFound } from "next/navigation";
@@ -14,6 +15,16 @@ const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
   display: "swap",
+});
+
+// Korean-first typeface — Pretendard Variable covers the full weight range
+// (45–920) in a single woff2 file (~2 MB uncompressed, served with swap).
+const pretendard = localFont({
+  src: "../fonts/PretendardVariable.woff2",
+  variable: "--font-pretendard",
+  display: "swap",
+  weight: "45 920",
+  style: "normal",
 });
 
 export function generateStaticParams() {
@@ -68,18 +79,10 @@ export default async function LocaleLayout({
   }
   setRequestLocale(locale);
 
-  // Pretendard-compatible system stack prioritises Korean glyphs without
-  // adding a webfont dependency that would block first render. Next step can
-  // swap in `next/font/local` + Pretendard if desired.
-  const koreanStack =
-    "Pretendard, 'Pretendard Variable', -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Noto Sans KR', 'Malgun Gothic', 'Nanum Gothic', sans-serif";
-  const latinStack =
-    "var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif";
-
   return (
     <html
       lang={locale}
-      className={cn(geistSans.variable, "h-full antialiased")}
+      className={cn(geistSans.variable, pretendard.variable, "h-full antialiased")}
       suppressHydrationWarning
     >
       <body
@@ -88,12 +91,12 @@ export default async function LocaleLayout({
           {
             "--font-sans":
               locale === "ko"
-                ? `${koreanStack}, ${latinStack}`
-                : `${latinStack}, ${koreanStack}`,
+                ? `var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif, var(--font-geist-sans)`
+                : `var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif, var(--font-pretendard)`,
             "--font-display":
               locale === "ko"
-                ? `${koreanStack}`
-                : `${latinStack}, ${koreanStack}`,
+                ? `var(--font-pretendard), -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif`
+                : `var(--font-geist-sans), -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif, var(--font-pretendard)`,
           } as React.CSSProperties
         }
       >
@@ -102,7 +105,7 @@ export default async function LocaleLayout({
             href="#main"
             className="sr-only focus:not-sr-only focus:fixed focus:left-4 focus:top-4 focus:z-50 focus:rounded-md focus:bg-surface focus:px-4 focus:py-2 focus:text-ink focus:shadow"
           >
-            {/* Localised at runtime by the Header component too */}
+            {(await getTranslations("nav"))("skipToContent")}
           </a>
           <Header />
           <main id="main" className="flex flex-1 flex-col">
