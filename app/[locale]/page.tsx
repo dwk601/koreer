@@ -64,11 +64,8 @@ export default async function HomePage({
   // Parallel fetches — independent requests should never await sequentially.
   const [list, stats] = await Promise.all([safeListJobs(), safeGetStats()]);
 
-  // Top 3 categories by volume for the stats strip.
-  const topCategories = Object.entries(stats.by_category)
-    .sort((a, b) => b[1] - a[1])
-    .slice(0, 3);
-  const totalFmt = formatTotal(stats.total_jobs, locale);
+  const totalFmt = new Intl.NumberFormat(locale).format(stats.total_jobs);
+  const sourceCount = Object.keys(stats.by_source).length || 8;
 
   return (
     <div className="relative">
@@ -76,18 +73,15 @@ export default async function HomePage({
       <section className="relative overflow-hidden">
         <HeroBackdrop />
         <div className="relative mx-auto w-full max-w-6xl px-4 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-28 lg:pt-28">
-          <p className="text-[11px] font-medium uppercase tracking-[0.22em] text-ink-mute">
+          <p className="type-label text-ink-mute">
             {t("home.heroEyebrow")}
           </p>
-          <h1
-            className="mt-5 max-w-4xl font-semibold leading-[1.02] tracking-[-0.02em]"
-            style={{ fontSize: "clamp(2.5rem, 6vw, 4.75rem)" }}
-          >
+          <h1 className="mt-5 max-w-4xl type-display">
             {t("home.heroTitle")}
             <br />
             <span className="text-ink-mute">{t("home.heroTitleAccent")}</span>
           </h1>
-          <p className="mt-6 max-w-xl text-[17px] leading-[1.45] text-ink-soft">
+          <p className="mt-6 max-w-xl type-body text-ink-soft">
             {t("home.heroSub")}
           </p>
 
@@ -95,40 +89,10 @@ export default async function HomePage({
             <SearchBar />
           </div>
 
-          {/* Stats strip */}
-          <dl className="mt-14 grid grid-cols-2 gap-6 border-t border-border pt-8 sm:grid-cols-3 lg:max-w-2xl">
-            <div>
-              <dt className="text-[11px] uppercase tracking-[0.16em] text-ink-mute">
-                {t("home.statsTotal")}
-              </dt>
-              <dd
-                className="mt-1.5 font-semibold tracking-[-0.02em] tabular-nums text-ink"
-                style={{ fontSize: "clamp(1.75rem, 3vw, 2.25rem)" }}
-              >
-                {totalFmt}
-              </dd>
-            </div>
-            <div className="sm:col-span-2">
-              <dt className="text-[11px] uppercase tracking-[0.16em] text-ink-mute">
-                {t("home.statsCategory")}
-              </dt>
-              <dd className="mt-2 flex flex-wrap gap-1.5">
-                {topCategories.map(([cat, count]) => (
-                  <span
-                    key={cat}
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-2.5 py-1 text-xs text-ink-soft"
-                  >
-                    <span className="font-medium capitalize text-ink">
-                      {cat}
-                    </span>
-                    <span className="tabular-nums text-ink-mute">
-                      {new Intl.NumberFormat(locale).format(count)}
-                    </span>
-                  </span>
-                ))}
-              </dd>
-            </div>
-          </dl>
+          {/* Stats sentence */}
+          <p className="mt-14 border-t border-border pt-8 max-w-2xl type-body text-ink-soft">
+            {t("home.statsLine", { total: totalFmt, sources: sourceCount })}
+          </p>
         </div>
       </section>
 
@@ -136,10 +100,10 @@ export default async function HomePage({
       <section className="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-4 pb-20">
         <div className="flex items-end justify-between gap-4">
           <div>
-            <p className="text-[11px] uppercase tracking-[0.18em] text-ink-mute">
+            <p className="type-label text-ink-mute">
               {t("home.freshEyebrow")}
             </p>
-            <h2 className="mt-2 text-2xl font-semibold tracking-tight sm:text-3xl">
+            <h2 className="mt-2 type-title">
               {t("home.freshTitle")}
             </h2>
           </div>
@@ -173,16 +137,6 @@ export default async function HomePage({
       </section>
     </div>
   );
-}
-
-/** Round large totals to nearest thousand with "+" suffix so the hero
- *  count stays fresh as the DB grows.  E.g. 26777 → "26,000+". */
-function formatTotal(count: number, locale: string): string {
-  if (count >= 10000) {
-    const rounded = Math.floor(count / 1000) * 1000;
-    return `${new Intl.NumberFormat(locale).format(rounded)}+`;
-  }
-  return new Intl.NumberFormat(locale).format(count);
 }
 
 /**

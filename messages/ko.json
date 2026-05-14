@@ -27,7 +27,8 @@
     "statsEyebrow": "실시간 통계",
     "statsTotal": "총 공고",
     "statsCategory": "인기 직군",
-    "statsLanguage": "사용 언어"
+    "statsLanguage": "사용 언어",
+    "statsLine": "최근 60일간 {sources}곳 출처에서 {total}개 공고를 추적합니다."
   },
   "jobs": {
     "pageTitle": "채용정보",
@@ -91,7 +92,9 @@
     "category": "직군",
     "applyExternal": "지원하기",
     "applyNote": "외부 사이트로 이동합니다",
-    "backToList": "목록으로"
+    "backToList": "목록으로",
+    "relatedEyebrow": "{source}의 다른 공고",
+    "relatedTitle": "이 출처의 최근 공고"
   },
   "error": {
     "generalTitle": "잠시 문제가 발생했어요",

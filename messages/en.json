@@ -27,7 +27,8 @@
     "statsEyebrow": "Live stats",
     "statsTotal": "Total jobs",
     "statsCategory": "Top categories",
-    "statsLanguage": "By language"
+    "statsLanguage": "By language",
+    "statsLine": "Tracking {total} jobs across {sources} sources. Newest 60 days only."
   },
   "jobs": {
     "pageTitle": "Jobs",
@@ -91,7 +92,9 @@
     "category": "Category",
     "applyExternal": "Apply",
     "applyNote": "You will leave Koreer",
-    "backToList": "Back to jobs"
+    "backToList": "Back to jobs",
+    "relatedEyebrow": "More from {source}",
+    "relatedTitle": "Recently posted by this source"
   },
   "error": {
     "generalTitle": "Something went wrong",
