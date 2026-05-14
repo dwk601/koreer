@@ -37,7 +37,8 @@ async function loadJob(idStr: string): Promise<JobDetail | null> {
   try {
     return await getJob(id);
   } catch (e) {
-    if (e instanceof ApiError && e.status === 404) return null;
+    if (e instanceof ApiError && (e.status === 404 || e.code === "TIMEOUT"))
+      return null;
     throw e;
   }
 }
