@@ -1,0 +1,458 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-05-14T17:31:16-04:00",
+  "title": "Design System: Koreer",
+  "extensions": {
+    "colorMeta": {
+      "bg": {
+        "role": "neutral",
+        "displayName": "Newsprint Cream",
+        "canonical": "oklch(98.1% 0.006 88)",
+        "tonalRamp": [
+          "oklch(98.5% 0.004 80)",
+          "oklch(95.5% 0.008 80)",
+          "oklch(88% 0.012 80)",
+          "oklch(72% 0.012 80)",
+          "oklch(55% 0.010 80)",
+          "oklch(38% 0.008 78)",
+          "oklch(25% 0.006 75)",
+          "oklch(15% 0.004 70)"
+        ]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "Page White",
+        "canonical": "oklch(100% 0 0)",
+        "tonalRamp": [
+          "oklch(100% 0 0)",
+          "oklch(97% 0.005 80)",
+          "oklch(92% 0.008 80)",
+          "oklch(82% 0.010 80)",
+          "oklch(68% 0.010 80)",
+          "oklch(50% 0.008 78)",
+          "oklch(32% 0.006 75)",
+          "oklch(18% 0.005 70)"
+        ]
+      },
+      "surface-muted": {
+        "role": "neutral",
+        "displayName": "Margin Tone",
+        "canonical": "oklch(95.0% 0.008 88)",
+        "tonalRamp": [
+          "oklch(98% 0.005 80)",
+          "oklch(95% 0.008 88)",
+          "oklch(90% 0.012 88)",
+          "oklch(82% 0.012 88)",
+          "oklch(68% 0.010 85)",
+          "oklch(50% 0.008 80)",
+          "oklch(34% 0.006 78)",
+          "oklch(20% 0.005 72)"
+        ]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Hairline (8% warm-black)",
+        "canonical": "oklch(15% 0.004 70 / 8%)",
+        "tonalRamp": null
+      },
+      "border-strong": {
+        "role": "neutral",
+        "displayName": "Hairline Strong (16% warm-black)",
+        "canonical": "oklch(15% 0.004 70 / 16%)",
+        "tonalRamp": null
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Editorial Black",
+        "canonical": "oklch(15.3% 0.005 70)",
+        "tonalRamp": [
+          "oklch(98% 0.005 80)",
+          "oklch(92% 0.006 78)",
+          "oklch(80% 0.006 76)",
+          "oklch(65% 0.006 74)",
+          "oklch(48% 0.006 72)",
+          "oklch(32% 0.005 70)",
+          "oklch(22% 0.005 70)",
+          "oklch(15% 0.004 70)"
+        ]
+      },
+      "ink-soft": {
+        "role": "neutral",
+        "displayName": "Body Ink",
+        "canonical": "oklch(28.3% 0.006 78)",
+        "tonalRamp": [
+          "oklch(98% 0.005 80)",
+          "oklch(92% 0.006 80)",
+          "oklch(80% 0.008 80)",
+          "oklch(65% 0.008 78)",
+          "oklch(50% 0.008 78)",
+          "oklch(38% 0.007 78)",
+          "oklch(28% 0.006 78)",
+          "oklch(18% 0.005 75)"
+        ]
+      },
+      "ink-mute": {
+        "role": "neutral",
+        "displayName": "Caption Gray",
+        "canonical": "oklch(48.5% 0.007 78)",
+        "tonalRamp": [
+          "oklch(98% 0.004 80)",
+          "oklch(92% 0.006 80)",
+          "oklch(82% 0.008 80)",
+          "oklch(70% 0.010 80)",
+          "oklch(58% 0.008 78)",
+          "oklch(48% 0.007 78)",
+          "oklch(35% 0.006 76)",
+          "oklch(22% 0.005 74)"
+        ]
+      },
+      "accent": {
+        "role": "primary",
+        "displayName": "Deep Evergreen",
+        "canonical": "oklch(24.3% 0.024 175)",
+        "tonalRamp": [
+          "oklch(96% 0.008 175)",
+          "oklch(88% 0.014 175)",
+          "oklch(78% 0.022 175)",
+          "oklch(64% 0.030 175)",
+          "oklch(50% 0.034 175)",
+          "oklch(38% 0.030 175)",
+          "oklch(24% 0.024 175)",
+          "oklch(15% 0.014 175)"
+        ]
+      },
+      "accent-ink": {
+        "role": "primary",
+        "displayName": "Bone (accent ink)",
+        "canonical": "oklch(96.2% 0.006 88)",
+        "tonalRamp": null
+      },
+      "chip-ko-bg": {
+        "role": "tertiary",
+        "displayName": "Aged Paper",
+        "canonical": "oklch(93.3% 0.029 92)",
+        "tonalRamp": [
+          "oklch(98% 0.012 92)",
+          "oklch(94% 0.025 92)",
+          "oklch(88% 0.044 90)",
+          "oklch(78% 0.062 90)",
+          "oklch(63% 0.078 88)",
+          "oklch(48% 0.080 86)",
+          "oklch(33% 0.060 85)",
+          "oklch(22% 0.030 82)"
+        ]
+      },
+      "chip-ko-ink": {
+        "role": "tertiary",
+        "displayName": "Sealed Ink",
+        "canonical": "oklch(33.5% 0.062 85)",
+        "tonalRamp": null
+      },
+      "chip-en-bg": {
+        "role": "tertiary",
+        "displayName": "Sea Mist",
+        "canonical": "oklch(91.3% 0.011 200)",
+        "tonalRamp": [
+          "oklch(98% 0.005 200)",
+          "oklch(94% 0.010 205)",
+          "oklch(88% 0.018 210)",
+          "oklch(75% 0.024 215)",
+          "oklch(58% 0.028 215)",
+          "oklch(43% 0.030 215)",
+          "oklch(28% 0.025 215)",
+          "oklch(18% 0.018 220)"
+        ]
+      },
+      "chip-en-ink": {
+        "role": "tertiary",
+        "displayName": "Harbor Ink",
+        "canonical": "oklch(28.7% 0.029 215)",
+        "tonalRamp": null
+      },
+      "chip-bi-bg": {
+        "role": "tertiary",
+        "displayName": "Wisteria Wash",
+        "canonical": "oklch(91.8% 0.018 290)",
+        "tonalRamp": [
+          "oklch(98% 0.005 290)",
+          "oklch(94% 0.014 290)",
+          "oklch(88% 0.030 290)",
+          "oklch(74% 0.066 290)",
+          "oklch(58% 0.115 290)",
+          "oklch(43% 0.135 290)",
+          "oklch(33% 0.130 290)",
+          "oklch(20% 0.080 290)"
+        ]
+      },
+      "chip-bi-ink": {
+        "role": "tertiary",
+        "displayName": "Dyed Indigo",
+        "canonical": "oklch(33.3% 0.131 288)",
+        "tonalRamp": null
+      },
+      "focus": {
+        "role": "secondary",
+        "displayName": "Brass Underline",
+        "canonical": "oklch(60.4% 0.106 90)",
+        "tonalRamp": [
+          "oklch(98% 0.012 90)",
+          "oklch(92% 0.030 90)",
+          "oklch(82% 0.062 90)",
+          "oklch(72% 0.092 90)",
+          "oklch(60% 0.106 90)",
+          "oklch(48% 0.092 90)",
+          "oklch(35% 0.060 88)",
+          "oklch(22% 0.030 85)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "Hero h1 only. Two-line maximum, with the second line in ink-mute to suggest a subtitle inside the same hierarchy step."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Job-detail page title. Always balanced. clamp(1.75rem, 3.5vw, 2.5rem)."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Section h2s, e.g. 'Recent jobs', the jobs list page heading."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Hero subtitle and body prose. Capped at 65 to 75ch by the layout containers."
+      },
+      "card-title": {
+        "displayName": "Card Title",
+        "purpose": "Job card titles, line-clamp-2. The smallest bolded heading in the system."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Job card metadata, sidebar facet counts, footer text. Always on ink-mute or ink-soft, never on primary ink."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Eyebrows over hero sections, source labels, meta-row dt elements. The only place the system uses uppercase."
+      }
+    },
+    "shadows": [
+      {
+        "name": "resting-hairline",
+        "value": "0 1px 0 0 rgba(0,0,0,0.04)",
+        "purpose": "Search bar at rest. The only resting shadow in the system, used so the rounded form reads as a button-like input."
+      },
+      {
+        "name": "focus-lift",
+        "value": "0 6px 24px -12px rgba(0,0,0,0.25)",
+        "purpose": "Search bar on focus-within. Combined with the brass focus ring on top."
+      },
+      {
+        "name": "card-hover",
+        "value": "0 8px 28px -18px rgba(0,0,0,0.22)",
+        "purpose": "Job cards on hover. Combined with a step from border to border-strong."
+      },
+      {
+        "name": "combobox-pop",
+        "value": "0 24px 60px -24px rgba(0,0,0,0.35)",
+        "purpose": "Search suggestions popover. The only real elevation in the system; popover must read as floating off the page."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.22, 0.61, 0.36, 1)",
+        "purpose": "Default easing for every transition in the system. Exponential ease-out shape, never bounce or elastic."
+      },
+      {
+        "name": "dur-fast",
+        "value": "120ms",
+        "purpose": "Snappy state changes (focus ring, accent dot scale)."
+      },
+      {
+        "name": "dur-med",
+        "value": "180ms",
+        "purpose": "Default duration for transition-colors / transition-shadow / transition-transform / transition-opacity utilities."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "@media (prefers-reduced-motion: reduce) { animation-duration: 0.001ms !important; transition-duration: 0.001ms !important; }",
+        "purpose": "Global reduced-motion guard already wired on every animatable element. Every new transition opts into this guard automatically."
+      }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "2xl", "value": "1536px" },
+      { "name": "page-rail", "value": "1152px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The accent CTA. Used on search submit, apply external, next page. One per view.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Apply on source<svg class=\"ds-btn-primary__icon\" aria-hidden=\"true\" viewBox=\"0 0 14 14\"><path d=\"M4 3 L11 3 L11 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/><path d=\"M11 3 L3 11\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></button>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; gap: 8px; height: 44px; padding: 0 24px; border: none; border-radius: 9999px; background: var(--color-accent, #1a2a28); color: var(--color-accent-ink, #f6f5ef); font-family: var(--font-sans, system-ui, sans-serif); font-size: 14px; font-weight: 600; letter-spacing: -0.01em; cursor: pointer; transition: opacity 180ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-btn-primary:hover { opacity: 0.9; } .ds-btn-primary:focus-visible { outline: 2px solid var(--color-focus, #a38b2d); outline-offset: 2px; } .ds-btn-primary__icon { width: 14px; height: 14px; transition: transform 180ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-btn-primary:hover .ds-btn-primary__icon { transform: translate(2px, -2px); }"
+    },
+    {
+      "name": "Pill Button",
+      "kind": "button",
+      "refersTo": "button-pill",
+      "description": "Hairline pill for secondary actions: 'Browse all jobs', 'Back to first', 'Clear filters'.",
+      "html": "<button class=\"ds-btn-pill\" type=\"button\">Browse all jobs<svg class=\"ds-btn-pill__icon\" aria-hidden=\"true\" viewBox=\"0 0 12 12\"><path d=\"M3 2 L9 6 L3 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></button>",
+      "css": ".ds-btn-pill { display: inline-flex; align-items: center; gap: 6px; height: 36px; padding: 0 16px; border: 1px solid var(--color-border, rgba(22,21,18,0.08)); border-radius: 9999px; background: var(--color-surface, #ffffff); color: var(--color-ink-soft, #3a3833); font-family: var(--font-sans, system-ui, sans-serif); font-size: 14px; font-weight: 500; cursor: pointer; transition: border-color 180ms cubic-bezier(0.22, 0.61, 0.36, 1), color 180ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-btn-pill:hover { border-color: var(--color-border-strong, rgba(22,21,18,0.16)); color: var(--color-ink, #16140f); } .ds-btn-pill:focus-visible { outline: 2px solid var(--color-focus, #a38b2d); outline-offset: 2px; } .ds-btn-pill__icon { width: 12px; height: 12px; transition: transform 180ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-btn-pill:hover .ds-btn-pill__icon { transform: translateX(2px); }"
+    },
+    {
+      "name": "Job Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "The list/grid primitive. Whole card is a Link overlay; hairline border at rest, border step plus card-hover shadow on hover. No resting shadow.",
+      "html": "<article class=\"ds-card\" tabindex=\"0\"><div class=\"ds-card__head\"><div class=\"ds-card__head-text\"><h3 class=\"ds-card__title\">Senior Frontend Engineer</h3><p class=\"ds-card__company\">Quietude Labs</p></div><span class=\"ds-chip ds-chip--bi\">KO · EN</span></div><div class=\"ds-card__meta\"><span>Seattle, WA</span><span class=\"ds-card__dot\" aria-hidden=\"true\">·</span><span class=\"ds-card__salary\">$140K–$180K</span><span class=\"ds-card__dot\" aria-hidden=\"true\">·</span><span>3 days ago</span></div><div class=\"ds-card__foot\"><span class=\"ds-card__source\">LinkedIn</span><svg class=\"ds-card__arrow\" aria-hidden=\"true\" viewBox=\"0 0 12 12\"><path d=\"M3 2 L9 6 L3 10\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></div></article>",
+      "css": ".ds-card { display: flex; flex-direction: column; gap: 12px; padding: 20px; border: 1px solid var(--color-border, rgba(22,21,18,0.08)); border-radius: 12px; background: var(--color-surface, #ffffff); font-family: var(--font-sans, system-ui, sans-serif); transition: border-color 180ms cubic-bezier(0.22, 0.61, 0.36, 1), box-shadow 180ms cubic-bezier(0.22, 0.61, 0.36, 1); cursor: pointer; } .ds-card:hover { border-color: var(--color-border-strong, rgba(22,21,18,0.16)); box-shadow: 0 8px 28px -18px rgba(0,0,0,0.22); } .ds-card:focus-visible { outline: 2px solid var(--color-focus, #a38b2d); outline-offset: 2px; } .ds-card__head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; } .ds-card__head-text { min-width: 0; } .ds-card__title { margin: 0; font-size: 15px; font-weight: 600; line-height: 1.3; letter-spacing: -0.01em; color: var(--color-ink, #16140f); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; } .ds-card__company { margin: 4px 0 0 0; font-size: 13px; color: var(--color-ink-soft, #3a3833); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; } .ds-card__meta { display: flex; flex-wrap: wrap; gap: 4px 10px; font-size: 12.5px; color: var(--color-ink-mute, #6f6c64); } .ds-card__salary { font-weight: 500; color: var(--color-ink-soft, #3a3833); } .ds-card__dot { opacity: 0.5; } .ds-card__foot { display: flex; align-items: center; justify-content: space-between; padding-top: 8px; margin-top: auto; font-size: 10.5px; color: var(--color-ink-mute, #6f6c64); } .ds-card__source { text-transform: uppercase; letter-spacing: 0.14em; } .ds-card__arrow { width: 12px; height: 12px; opacity: 0; transition: opacity 180ms cubic-bezier(0.22, 0.61, 0.36, 1), transform 180ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-card:hover .ds-card__arrow { opacity: 1; transform: translateX(2px); }"
+    },
+    {
+      "name": "Language Chip",
+      "kind": "chip",
+      "refersTo": "chip-bi",
+      "description": "Categorical chip for KO / EN / Bilingual. Three tints, never used for state. Modify the modifier class to switch language.",
+      "html": "<div class=\"ds-chip-row\"><span class=\"ds-chip ds-chip--ko\">KO</span><span class=\"ds-chip ds-chip--en\">EN</span><span class=\"ds-chip ds-chip--bi\">KO · EN</span></div>",
+      "css": ".ds-chip-row { display: inline-flex; gap: 8px; font-family: var(--font-sans, system-ui, sans-serif); } .ds-chip { display: inline-flex; align-items: center; padding: 2px 8px; border-radius: 9999px; font-size: 11px; font-weight: 500; letter-spacing: 0.01em; } .ds-chip--ko { background: var(--color-chip-ko-bg, #efe8d4); color: var(--color-chip-ko-ink, #564613); } .ds-chip--en { background: var(--color-chip-en-bg, #dfe9e9); color: var(--color-chip-en-ink, #17353a); } .ds-chip--bi { background: var(--color-chip-bi-bg, #e9e8f3); color: var(--color-chip-bi-ink, #38347b); }"
+    },
+    {
+      "name": "Active Filter Chip",
+      "kind": "chip",
+      "refersTo": "button-pill",
+      "description": "Removable filter pill. Each chip is a link that clears its filter on click; the X icon brightens on hover.",
+      "html": "<a class=\"ds-filter-chip\" href=\"#\"><span class=\"ds-filter-chip__label\">Engineering</span><svg class=\"ds-filter-chip__x\" aria-hidden=\"true\" viewBox=\"0 0 10 10\"><path d=\"M2 2 L8 8 M8 2 L2 8\" stroke=\"currentColor\" stroke-width=\"1.4\" stroke-linecap=\"round\"/></svg></a>",
+      "css": ".ds-filter-chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; border: 1px solid var(--color-border, rgba(22,21,18,0.08)); border-radius: 9999px; background: var(--color-surface, #ffffff); color: var(--color-ink-soft, #3a3833); font-family: var(--font-sans, system-ui, sans-serif); font-size: 12px; text-decoration: none; transition: border-color 180ms cubic-bezier(0.22, 0.61, 0.36, 1), color 180ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-filter-chip:hover { border-color: var(--color-border-strong, rgba(22,21,18,0.16)); color: var(--color-ink, #16140f); } .ds-filter-chip:focus-visible { outline: 2px solid var(--color-focus, #a38b2d); outline-offset: 2px; } .ds-filter-chip__label { font-weight: 500; } .ds-filter-chip__x { width: 10px; height: 10px; color: var(--color-ink-mute, #6f6c64); } .ds-filter-chip:hover .ds-filter-chip__x { color: var(--color-ink, #16140f); }"
+    },
+    {
+      "name": "Search Bar (hero)",
+      "kind": "input",
+      "refersTo": "input-search",
+      "description": "Hero combobox-style search input. Pill, hairline-strong border, 1px resting shadow, deeper Focus Lift on focus-within. Inset accent submit button.",
+      "html": "<form class=\"ds-search\" role=\"search\"><span class=\"ds-search__icon\" aria-hidden=\"true\"><svg viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.75\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"9\" cy=\"9\" r=\"6\"/><path d=\"m17 17-3.2-3.2\"/></svg></span><label class=\"ds-search__sr\" for=\"ds-q\">Search jobs</label><input id=\"ds-q\" class=\"ds-search__input\" type=\"text\" placeholder=\"Title, company, or keyword\" autocomplete=\"off\"/><button type=\"submit\" class=\"ds-search__submit\">Search</button></form>",
+      "css": ".ds-search { position: relative; display: flex; align-items: center; gap: 8px; height: 56px; padding: 0 6px 0 20px; border: 1px solid var(--color-border-strong, rgba(22,21,18,0.16)); border-radius: 9999px; background: var(--color-surface, #ffffff); box-shadow: 0 1px 0 0 rgba(0,0,0,0.04); transition: box-shadow 180ms cubic-bezier(0.22, 0.61, 0.36, 1); font-family: var(--font-sans, system-ui, sans-serif); } .ds-search:focus-within { box-shadow: 0 6px 24px -12px rgba(0,0,0,0.25); } .ds-search__icon { display: flex; align-items: center; justify-content: center; width: 18px; height: 18px; color: var(--color-ink-mute, #6f6c64); flex-shrink: 0; } .ds-search__icon svg { width: 100%; height: 100%; } .ds-search__sr { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; } .ds-search__input { flex: 1; min-width: 0; height: 100%; border: none; background: transparent; font-size: 17px; font-weight: 500; color: var(--color-ink, #16140f); outline: none; } .ds-search__input::placeholder { color: var(--color-ink-mute, #6f6c64); font-weight: 400; } .ds-search__submit { flex-shrink: 0; height: 44px; padding: 0 20px; border: none; border-radius: 9999px; background: var(--color-accent, #1a2a28); color: var(--color-accent-ink, #f6f5ef); font-size: 14px; font-weight: 500; cursor: pointer; transition: opacity 180ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-search__submit:hover { opacity: 0.9; } .ds-search__submit:focus-visible { outline: 2px solid var(--color-focus, #a38b2d); outline-offset: 2px; }"
+    },
+    {
+      "name": "Filter Row",
+      "kind": "input",
+      "refersTo": "filter-row",
+      "description": "Sidebar facet row. Native checkbox or radio plus label and tabular count. Hover and active fill use surface-muted, never accent.",
+      "html": "<ul class=\"ds-filter-list\"><li><label class=\"ds-filter-row\"><span class=\"ds-filter-row__lhs\"><input type=\"checkbox\" class=\"ds-filter-row__input\" checked/><span>LinkedIn</span></span><span class=\"ds-filter-row__count\">4,127</span></label></li><li><label class=\"ds-filter-row ds-filter-row--inactive\"><span class=\"ds-filter-row__lhs\"><input type=\"checkbox\" class=\"ds-filter-row__input\"/><span>GTKSA</span></span><span class=\"ds-filter-row__count\">214</span></label></li><li><label class=\"ds-filter-row ds-filter-row--inactive\"><span class=\"ds-filter-row__lhs\"><input type=\"checkbox\" class=\"ds-filter-row__input\"/><span>WorkingUS</span></span><span class=\"ds-filter-row__count\">88</span></label></li></ul>",
+      "css": ".ds-filter-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 2px; font-family: var(--font-sans, system-ui, sans-serif); } .ds-filter-row { display: flex; align-items: center; justify-content: space-between; gap: 8px; padding: 6px 8px; border-radius: 6px; background: var(--color-surface-muted, #f1efe8); color: var(--color-ink, #16140f); font-size: 14px; cursor: pointer; transition: background-color 180ms cubic-bezier(0.22, 0.61, 0.36, 1), color 180ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-filter-row--inactive { background: transparent; color: var(--color-ink-soft, #3a3833); } .ds-filter-row--inactive:hover { background: color-mix(in oklab, var(--color-surface-muted, #f1efe8) 60%, transparent); color: var(--color-ink, #16140f); } .ds-filter-row__lhs { display: flex; min-width: 0; align-items: center; gap: 8px; } .ds-filter-row__input { width: 14px; height: 14px; accent-color: var(--color-accent, #1a2a28); } .ds-filter-row__count { font-variant-numeric: tabular-nums; font-size: 12px; color: var(--color-ink-mute, #6f6c64); }"
+    },
+    {
+      "name": "Locale Switcher",
+      "kind": "nav",
+      "refersTo": "button-pill",
+      "description": "Two-segment pill control. Active segment uses accent fill; inactive segment uses ink-mute label and surface-muted hover.",
+      "html": "<div class=\"ds-locale\" role=\"group\" aria-label=\"Language\"><button type=\"button\" class=\"ds-locale__btn ds-locale__btn--active\" aria-pressed=\"true\" disabled>한국어</button><button type=\"button\" class=\"ds-locale__btn\" aria-pressed=\"false\">English</button></div>",
+      "css": ".ds-locale { display: inline-flex; align-items: center; padding: 2px; border: 1px solid var(--color-border, rgba(22,21,18,0.08)); border-radius: 6px; background: var(--color-surface, #ffffff); font-family: var(--font-sans, system-ui, sans-serif); font-size: 12px; } .ds-locale__btn { padding: 4px 10px; border: none; border-radius: 5px; background: transparent; color: var(--color-ink-mute, #6f6c64); font-family: inherit; font-size: inherit; cursor: pointer; transition: background-color 180ms cubic-bezier(0.22, 0.61, 0.36, 1), color 180ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-locale__btn:hover:not(:disabled) { background: var(--color-surface-muted, #f1efe8); color: var(--color-ink, #16140f); } .ds-locale__btn--active { background: var(--color-accent, #1a2a28); color: var(--color-accent-ink, #f6f5ef); cursor: default; } .ds-locale__btn:focus-visible { outline: 2px solid var(--color-focus, #a38b2d); outline-offset: 2px; }"
+    },
+    {
+      "name": "Empty State",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Dashed-border container for zero-result and not-found views. Sits below page header, never inside a card.",
+      "html": "<div class=\"ds-empty\"><div class=\"ds-empty__icon\" aria-hidden=\"true\"><svg viewBox=\"0 0 20 20\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.6\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><circle cx=\"9\" cy=\"9\" r=\"6\"/><path d=\"m17 17-3.2-3.2\"/></svg></div><h2 class=\"ds-empty__title\">No matching jobs</h2><p class=\"ds-empty__sub\">Try clearing a filter, broadening your location, or removing salary constraints.</p><a class=\"ds-empty__cta\" href=\"#\">Clear all filters</a></div>",
+      "css": ".ds-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 56px 24px; border: 1px dashed var(--color-border-strong, rgba(22,21,18,0.16)); border-radius: 16px; background: color-mix(in oklab, var(--color-surface, #ffffff) 60%, transparent); text-align: center; font-family: var(--font-sans, system-ui, sans-serif); } .ds-empty__icon { display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; margin-bottom: 20px; border-radius: 9999px; background: var(--color-surface-muted, #f1efe8); color: var(--color-ink-mute, #6f6c64); } .ds-empty__icon svg { width: 22px; height: 22px; } .ds-empty__title { margin: 0; font-size: 18px; font-weight: 600; letter-spacing: -0.01em; color: var(--color-ink, #16140f); } .ds-empty__sub { margin: 8px 0 0 0; max-width: 28rem; font-size: 14px; line-height: 1.5; color: var(--color-ink-mute, #6f6c64); } .ds-empty__cta { margin-top: 20px; display: inline-flex; align-items: center; height: 36px; padding: 0 16px; border: 1px solid var(--color-border, rgba(22,21,18,0.08)); border-radius: 9999px; background: var(--color-surface, #ffffff); color: var(--color-ink-soft, #3a3833); font-size: 14px; font-weight: 500; text-decoration: none; transition: border-color 180ms cubic-bezier(0.22, 0.61, 0.36, 1), color 180ms cubic-bezier(0.22, 0.61, 0.36, 1); } .ds-empty__cta:hover { border-color: var(--color-border-strong, rgba(22,21,18,0.16)); color: var(--color-ink, #16140f); } .ds-empty__cta:focus-visible { outline: 2px solid var(--color-focus, #a38b2d); outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Editorial Bulletin",
+    "overview": "Koreer is a job board that behaves like a well-edited newsletter. The visual system is restrained, print-adjacent, signal-dense. Newsprint-cream surfaces, warm near-black ink, one confident evergreen accent, and three low-chroma language chips do all the work that gradients, illustrations, and engagement chrome do on lesser sites. Pretendard carries Korean and Geist carries Latin, both tuned per locale (word-break: keep-all and tighter tracking for :lang(ko), slightly closer tracking for :lang(en)) so neither script reads like a translation of the other.\n\nThis system rejects, by name, what PRODUCT.md rejects: generic SaaS dashboards, LinkedIn-corporate chrome, Indeed ad-cluttered density, the banner-walls of Korean job portals, and consumer-app candy. When in doubt the system leans toward editorial print and away from modern web app. The user should feel the page was curated by someone who respects their time, not aggregated by a platform desperate for engagement.\n\nThe whole surface is built so source provenance and recency are visible at a glance. Every card carries its source label and posted-relative date in the same hierarchical position; the home hero's stats strip exposes the corpus size and category mix without graphs or motion. Decoration is what gets cut first; restraint is what gets defended.",
+    "keyCharacteristics": [
+      "Tinted neutrals only. No #fff, no #000. Surfaces tilt warm; ink is a warm near-black (#16140f).",
+      "One confident accent: deep evergreen on cream. Used at most ~10% of any screen.",
+      "Three categorical language chips, low chroma, never used for state.",
+      "Hairline borders (rgba(22,21,18,0.08)) carry structure. Shadows appear only on response.",
+      "Pill geometry for actions; 12px rounded rectangles for cards. Nothing in between.",
+      "Eyebrow labels in 11px, uppercase, 0.16 to 0.22em tracking. The only time the system shouts.",
+      "Motion is exponential ease-out at 180ms. Reduced-motion is honoured globally."
+    ],
+    "rules": [
+      {
+        "name": "The One Voice Rule",
+        "body": "Deep Evergreen appears on no more than ~10% of any rendered screen. There is exactly one primary action per view (submit search, apply, paginate forward). The locale switcher's active pill and the 8px logo dot are the only secondary uses. Two evergreen elements competing on screen is a bug, not a design.",
+        "section": "colors"
+      },
+      {
+        "name": "The No Pure Black Rule",
+        "body": "#000 and #fff are forbidden in the source. Every neutral is a warm tint. If a color picker yields #000000, replace it with #16140f or #0c0b08 (dark mode bg).",
+        "section": "colors"
+      },
+      {
+        "name": "The Categorical-Not-State Rule",
+        "body": "Language chip colors are only for language. Never promote them to status indicators (active, warning, new). Status uses the neutral or accent system, not chip tints.",
+        "section": "colors"
+      },
+      {
+        "name": "The Locale-Aware Tracking Rule",
+        "body": "Korean and Latin require different letter-spacing to read level. :lang(ko) gets -0.005em and word-break: keep-all (Korean compositions never break mid-syllable-cluster). :lang(en) gets -0.011em. Set both at the :lang() level; never on individual elements.",
+        "section": "typography"
+      },
+      {
+        "name": "The Balanced-Headings Rule",
+        "body": "Every h1, h2, h3 has text-wrap: balance. Every article p and .prose p has text-wrap: pretty. No ragged display copy, no orphan body lines.",
+        "section": "typography"
+      },
+      {
+        "name": "The Eyebrow-Only Uppercase Rule",
+        "body": "Uppercase plus tight tracking is reserved for labels, eyebrows, and the source provenance line on cards. Never run body copy uppercase. Never use uppercase for emphasis inside prose.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat-By-Default Rule",
+        "body": "Surfaces have no shadow at rest. Borders carry structure. Shadows are response, not decoration. If a card has a resting shadow, it is wrong.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Long-Low-Tinted Rule",
+        "body": "Every shadow uses a long Y-offset, large blur, and negative spread, not the soft ambient 0 4px 12px rgba(0,0,0,0.1) SaaS reflex. The negative spread tightens the contact patch so the lift reads as crisp paper, not a glass haze.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Border-Steps-Before-Shadow Rule",
+        "body": "Hover responds first by stepping the border from border (#16151214) to border-strong (#16151229). Shadow comes second, and only on cards that take a Link overlay. Filter rows, chips, and pagination links get border-step only.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do keep the One Voice Rule: <=10% of any screen in evergreen, with one primary action per view.",
+      "Do lead with hairline borders (#16151214) for structure, and step to #16151229 for hover/focus. Shadow comes second.",
+      "Do use 12px (xl) rounded rectangles for cards and 9999px pills for actions. Nothing in between.",
+      "Do keep eyebrow labels at 11px, uppercase, 0.16 to 0.22em tracking, in text-ink-mute. They are the system's voice for hierarchy.",
+      "Do surface source provenance and posted-relative date on every card and detail header. Freshness is the product's spine.",
+      "Do balance Korean and Latin: keep word-break: keep-all and the locale-aware tracking pair, and order font stacks per locale.",
+      "Do honour prefers-reduced-motion on every new transition. The global guard is already wired; opt every new animation into the same path.",
+      "Do use color-mix(in oklab, ...) for tints (the hero backdrop pattern). It carries through to dark mode without a separate value.",
+      "Do keep the focus ring at 2px Brass Underline (#a38b2d) with 2px offset and 3px corner radius, on every interactive element. Same value, every element.",
+      "Do use text-wrap: balance on every heading and text-wrap: pretty on every paragraph."
+    ],
+    "donts": [
+      "Don't use #000 or #fff. Tint every neutral toward the warm hue family. If a value rounds to either, replace it with #16140f or #faf9f5 / #0c0b08 / #141310.",
+      "Don't ship the generic SaaS dashboard: no navy-and-cyan, no hero-metric template (big number / small label / supporting stats / gradient accent), no rounded platform-feature cards in a 3-column grid. PRODUCT.md calls this out by name.",
+      "Don't ship LinkedIn-corporate chrome: no corporate blue, no profile-driven shell, no open-to-work engagement bait.",
+      "Don't ship Indeed-style ad clutter: no sponsored banners, no listing density that buries the signal, no aggressive yellow/black branding.",
+      "Don't ship Korean portal patterns (잡코리아 / 사람인 / 인크루트): no banner-ad walls, no portal-shaped homepages, no decorated-card grids, no rotating promotion strips.",
+      "Don't ship consumer-app candy: no oversized illustrations, no gradient blobs, no Memphis shapes, no springy bounce or elastic easing.",
+      "Don't use border-left or border-right greater than 1px as a colored accent on cards, list items, callouts, or alerts. Replace with full hairline borders, background tints, or a leading icon.",
+      "Don't use background-clip: text with gradients. Emphasis is weight, scale, or color step, never gradient-text.",
+      "Don't stack glassmorphism. The header's 8% backdrop-blur over translucent cream is the only permitted use. Never on cards, never on modals.",
+      "Don't introduce modals as a first thought. Exhaust inline / progressive disclosure first; the only modal-like element today is the search combobox popover, and that's intentional.",
+      "Don't nest cards. Two 12px rounded surfaces inside each other is always wrong.",
+      "Don't wrap every block in a max-w-7xl container. The max-w-6xl page rail is enough; full-bleed sections (hero backdrop) and narrow rails (max-w-2xl for the search and stats strip) are deliberate.",
+      "Don't animate CSS layout properties (width, height, padding, top/left). Use transform and opacity. Hover transforms on cards should be <=2px.",
+      "Don't use bouncy, elastic, or spring easings. The system uses cubic-bezier(0.22, 0.61, 0.36, 1) (ease-out) at 120ms (fast) or 180ms (medium). No back-out, no bounce.",
+      "Don't strip the source label or post-date from a card to make it prettier. Provenance is part of the product.",
+      "Don't invent new accent colors for status. Status is accent, surface-muted, or a categorical chip (only when the status is a category).",
+      "Don't use em dashes. Use commas, colons, semicolons, periods, parentheses. The middle dot used as a meta separator is not punctuation and is fine.",
+      "Don't decrease body text below 13px on primary content. The user base spans early-20s F-1 grads to 50+ 1.0-gen immigrants; readability is a product requirement."
+    ]
+  }
+}
