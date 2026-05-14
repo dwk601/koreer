@@ -1,4 +1,5 @@
 import { apiFetch, type ApiFetchOptions } from "./client";
+import { freshnessCutoff } from "@/lib/date";
 import {
   facetsResponseSchema,
   jobDetailSchema,
@@ -11,12 +12,10 @@ import {
   type StatsResponse,
   type SuggestResponse,
 } from "./schemas";
-import { freshnessCutoff } from "@/lib/date";
 
 /**
  * Shared parameter shape for list + facets. Mirrors the FastAPI query
- * signature; all fields are optional. `post_date_from` is injected
- * automatically unless the caller overrides it.
+ * signature; all fields are optional.
  */
 export interface ListJobsParams {
   q?: string;
@@ -29,13 +28,19 @@ export interface ListJobsParams {
   salary_max?: number;
   salary_unit?: string;
   salary_currency?: string;
-  /** Override freshness start. If omitted, defaults to today − 60 days. */
+  /** Filter by start of posting date range. */
   post_date_from?: string;
   post_date_to?: string;
   company_inferred?: boolean;
   sort?: "relevance" | "newest" | "salary_high" | "salary_low" | "company_az";
   cursor?: string;
   limit?: number;
+}
+
+/** Fills in post_date_from = today − 60d unless the caller already set it. */
+function withFreshnessDefault(params: ListJobsParams): ListJobsParams {
+  if (params.post_date_from) return params;
+  return { ...params, post_date_from: freshnessCutoff() };
 }
 
 function toQuery(params: ListJobsParams): ApiFetchOptions["query"] {
@@ -50,7 +55,7 @@ function toQuery(params: ListJobsParams): ApiFetchOptions["query"] {
     salary_max: params.salary_max,
     salary_unit: params.salary_unit,
     salary_currency: params.salary_currency,
-    post_date_from: params.post_date_from ?? freshnessCutoff(),
+    post_date_from: params.post_date_from,
     post_date_to: params.post_date_to,
     company_inferred: params.company_inferred,
     sort: params.sort,
@@ -59,13 +64,13 @@ function toQuery(params: ListJobsParams): ApiFetchOptions["query"] {
   };
 }
 
-/** Primary list/search endpoint. Enforces the 60-day freshness window. */
+/** Primary list/search endpoint. */
 export async function listJobs(
   params: ListJobsParams = {},
-  options: Pick<ApiFetchOptions, "revalidate" | "signal" | "tags"> = {},
+  options: Pick<ApiFetchOptions, "revalidate" | "signal" | "tags" | "timeoutMs"> = {},
 ): Promise<ListResponse> {
   return apiFetch("/api/v1/jobs", listResponseSchema, {
-    query: toQuery(params),
+    query: toQuery(withFreshnessDefault(params)),
     revalidate: 60,
     tags: ["jobs:list"],
     ...options,
@@ -75,10 +80,10 @@ export async function listJobs(
 /** Filter-aware facet counts; useful for sidebar UIs. */
 export async function getFacets(
   params: ListJobsParams = {},
-  options: Pick<ApiFetchOptions, "revalidate" | "signal" | "tags"> = {},
+  options: Pick<ApiFetchOptions, "revalidate" | "signal" | "tags" | "timeoutMs"> = {},
 ): Promise<FacetsResponse> {
   return apiFetch("/api/v1/jobs/facets", facetsResponseSchema, {
-    query: toQuery(params),
+    query: toQuery(withFreshnessDefault(params)),
     revalidate: 120,
     tags: ["jobs:facets"],
     ...options,
@@ -88,7 +93,7 @@ export async function getFacets(
 /** Detail lookup by numeric id. Throws `ApiError` with status=404 if missing. */
 export async function getJob(
   id: number,
-  options: Pick<ApiFetchOptions, "revalidate" | "signal"> = {},
+  options: Pick<ApiFetchOptions, "revalidate" | "signal" | "timeoutMs"> = {},
 ): Promise<JobDetail> {
   return apiFetch(`/api/v1/jobs/${encodeURIComponent(String(id))}`, jobDetailSchema, {
     revalidate: 300,
