@@ -41,8 +41,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# ai agents
+# ai agents & tools
 .kiro/
+.agents/
 skills-lock.json
 AGENTS.md
 CLAUDE.md
@@ -56,6 +57,11 @@ CLAUDE.md
 .continue/
 .clinerules
 .github/copilot-instructions.md
+.codeium/
+.vscode/copilot_instructions.md
+.ai/
+.anthropic/
+.openai/
 
 
 # Playwright
