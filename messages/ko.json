@@ -74,6 +74,7 @@
       "postedAgo": "{days}일 전",
       "postedToday": "오늘",
       "salaryUnavailable": "급여 미기재",
+      "dateUnknown": "등록일 미기재",
       "languageChip": "공고 언어"
     },
     "suggest": {

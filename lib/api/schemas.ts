@@ -42,7 +42,7 @@ export const jobSummarySchema = z
     salary_unit: z.string().nullable(),
     salary_currency: z.string().nullable(),
     language: languageSchema,
-    post_date: z.string(),
+    post_date: z.string().nullable(),
     source: z.string(),
   })
   .loose();
@@ -78,7 +78,7 @@ export const jobDetailSchema = z
     description_length: z.number().optional(),
     job_category: z.array(z.string()).default([]),
     language: languageSchema,
-    post_date: z.string(),
+    post_date: z.string().nullable(),
     post_date_raw: z.string().nullable().optional(),
     /** External apply / source URL. */
     link: z.string().nullable().optional(),

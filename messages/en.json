@@ -74,6 +74,7 @@
       "postedAgo": "{days}d ago",
       "postedToday": "Today",
       "salaryUnavailable": "Salary not listed",
+      "dateUnknown": "Posting date not listed",
       "languageChip": "Language"
     },
     "suggest": {

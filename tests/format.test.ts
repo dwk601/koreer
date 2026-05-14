@@ -74,7 +74,11 @@ describe("formatPostedRelative", () => {
       new Date("2026-05-13T00:00:00Z"),
     );
     // Intl.RelativeTimeFormat returns "today" for 0 with numeric:auto
-    expect(s.toLowerCase()).toContain("today");
+    expect(s?.toLowerCase()).toContain("today");
+  });
+
+  it("returns null when post_date is null", () => {
+    expect(formatPostedRelative(null, "en")).toBeNull();
   });
 });
 

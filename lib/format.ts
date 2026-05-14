@@ -47,15 +47,16 @@ export function formatSalary(
 }
 
 /**
- * Locale-aware "posted X ago" string. Uses Intl.RelativeTimeFormat to give
- * us proper Korean/English renderings without extra deps.
+ * Locale-aware "posted X ago" string. Returns null when post_date is null
+ * so callers can render a localized fallback instead of an empty string.
  */
 export function formatPostedRelative(
-  postDate: string,
+  postDate: string | null,
   locale: string,
   now: Date = new Date(),
-): string {
+): string | null {
   const days = daysSincePosted(postDate, now);
+  if (days == null) return null;
   const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
   if (days === 0) return rtf.format(0, "day"); // "today" / "오늘"
   return rtf.format(-days, "day");

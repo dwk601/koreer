@@ -80,7 +80,7 @@ export async function JobCard({
 
       <div className="relative z-10 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[12.5px] text-ink-mute">
         {location && <span className="truncate">{location}</span>}
-        {location && (salary || posted) && <DotSep />}
+        {location && <DotSep />}
         {salary ? (
           <span className="font-medium text-ink-soft">{salary}</span>
         ) : (
@@ -88,8 +88,12 @@ export async function JobCard({
             <span className="italic">{t("card.salaryUnavailable")}</span>
           )
         )}
-        {salary && posted && <DotSep />}
-        <span>{posted}</span>
+        {salary && <DotSep />}
+        {posted != null ? (
+          <span>{posted}</span>
+        ) : (
+          <span className="italic">{t("card.dateUnknown")}</span>
+        )}
       </div>
 
       {variant === "default" && (
