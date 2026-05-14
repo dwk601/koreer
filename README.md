@@ -74,22 +74,22 @@ Coolify's Nixpacks provider auto-detects this Next.js app — no Dockerfile need
 
 1. **Create the application** — Coolify UI → `+ New` → **Application** → *Public/Private Git* (or from a connected provider). Point at this repo, branch `main`. Build pack: **Nixpacks**. Install, build, and start commands are auto-detected.
 
-2. **Environment variables** — under the app's **Environment** tab. Mark `NEXT_PUBLIC_SITE_URL` as _"Available at build time"_ so it is baked into the client bundle.
+2. **Environment variables** — under the app's **Environment** tab:
 
    | Variable | Value | Build-time? |
    |----------|-------|-------------|
-   | `API_BASE_URL` | Internal URL for apiV2 (e.g. `http://api:8000` on the shared Coolify network, or the managed resource's internal host) | runtime |
-   | `NEXT_PUBLIC_SITE_URL` | Public site URL (e.g. `https://jobs.yourdomain.com`) | **build** |
-   | `SERVICE_FQDN_WEB_3000` | Your public domain — leave blank for a generated `*.sslip.io` | runtime |
-   | `NODE_VERSION` | `24` (optional; Nixpacks defaults are usually fine) | build |
+   | `API_BASE_URL` | Internal Docker network URL for apiV2 (e.g. `http://apiv2:8000`). Use the container name of your apiV2 app. | runtime |
+   | `NEXT_PUBLIC_SITE_URL` | After first deploy, set to the generated `*.sslip.io` URL shown in Coolify. | **build** |
 
-3. **Deploy** — Coolify runs Nixpacks, builds the app, starts `npm start` on `:3000`, and Traefik auto-provisions TLS.
+3. **First deploy** — leave `NEXT_PUBLIC_SITE_URL` blank. Coolify runs Nixpacks, builds the app, starts `npm start` on `:3000`, and Traefik auto-provisions TLS with a `*.sslip.io` URL.
 
-4. **Verify:**
+4. **Update and redeploy** — once you see the generated URL in Coolify's app page, set `NEXT_PUBLIC_SITE_URL` to that URL, mark it **"Available at build time"**, and redeploy. This bakes the correct canonical/OG/sitemap URLs into the build.
+
+5. **Verify:**
 
    ```bash
-   curl -s https://<domain>/         # redirects to /ko
-   curl -sI https://<domain>/robots.txt
+   curl -sI https://<domain>/         # 307 -> /ko
+   curl -s  https://<domain>/robots.txt
    curl -s  https://<domain>/sitemap.xml | head -20
    ```
 
@@ -97,6 +97,7 @@ Coolify's Nixpacks provider auto-detects this Next.js app — no Dockerfile need
 
 ```bash
 cp .env.example .env.local
+# Edit .env.local: set API_BASE_URL to your local apiV2 (e.g. http://localhost:8000)
 npm run build
 npm start
 # then
@@ -110,7 +111,7 @@ curl -s  http://localhost:3000/robots.txt
 - **Freshness enforcement:** Every `listJobs` and `getFacets` request silently injects `post_date_from = today − 60 days` unless the caller explicitly overrides it. This is enforced at the API-client layer, so every page in the app benefits. `getJob`, `getStats`, and `suggestJobs` are unaffected.
 - **Count behavior:** The home page hero count (`stats.total_jobs`) is the full-corpus count. The `/jobs` page count (`list.total_estimated`) is filter- and freshness-aware. This is intentional — the hero showcases the full database size, while the list reflects what users can actually find.
 - **Performance:** The `/jobs` page calls `listJobs` once (sidebar and results share the response via Next's fetch cache) instead of making a separate `getFacets` call.
-- Sitemap includes up to 200 freshest detail URLs with full `<xhtml:link rel="alternate" hreflang="..."/>` pairs and `x-default` → `/ko`.
+- **Sitemap:** Includes up to 200 freshest detail URLs with full `<xhtml:link rel="alternate" hreflang="..."/>` pairs and `x-default` → `/ko`. Falls back gracefully if the API is unreachable at build time.
 
 ## License
 
