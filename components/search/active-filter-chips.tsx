@@ -97,7 +97,7 @@ export async function ActiveFilterChips({
           <Link
             key={`${chip.label}-${i}`}
             href={href as "/jobs"}
-            className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 text-[12px] text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
+            className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 type-caption text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
           >
             <span className="font-medium">{chip.label}</span>
             <svg
@@ -118,7 +118,7 @@ export async function ActiveFilterChips({
       {chips.length > 1 && (
         <Link
           href={allClearHref as "/jobs"}
-          className="text-[12px] font-medium text-ink-mute underline-offset-2 hover:text-ink hover:underline"
+          className="type-caption font-medium text-ink-mute underline-offset-2 hover:text-ink hover:underline"
         >
           {t("clearFilters")}
         </Link>

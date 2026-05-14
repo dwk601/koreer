@@ -191,7 +191,7 @@ export function SearchBar({
           placeholder={t("home.searchPlaceholder")}
           className={cn(
             "flex-1 min-w-0 bg-transparent font-medium outline-none placeholder:text-ink-mute",
-            variant === "hero" ? "text-[17px]" : "text-[15px]",
+            variant === "hero" ? "text-body" : "text-card-title",
           )}
         />
         <button

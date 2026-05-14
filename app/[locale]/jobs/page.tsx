@@ -56,7 +56,7 @@ export default async function JobsPage({ params, searchParams }: Props) {
   return (
     <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
       <header className="flex flex-col gap-5 border-b border-border pb-8">
-        <h1 className="text-2xl font-semibold tracking-tight sm:text-[28px]">
+        <h1 className="type-title">
           {t("pageTitle")}
         </h1>
         <SearchBar initialQuery={parsed.q ?? ""} variant="compact" />

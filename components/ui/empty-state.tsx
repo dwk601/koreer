@@ -35,11 +35,11 @@ export function EmptyState({
           <path d="m17 17-3.2-3.2" />
         </svg>
       </div>
-      <h2 className="text-lg font-semibold tracking-tight text-ink">
+      <h2 className="type-title text-ink">
         {title}
       </h2>
       {description && (
-        <p className="mt-2 max-w-md text-sm text-ink-mute">{description}</p>
+        <p className="mt-2 max-w-md type-caption text-ink-mute">{description}</p>
       )}
       {action && <div className="mt-5">{action}</div>}
     </div>
