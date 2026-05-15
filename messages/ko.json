@@ -56,7 +56,8 @@
       "location_state": "지역 (주)",
       "salary_bucket": "급여 구간",
       "showFewer": "− 접기",
-      "showMore": "+ {count}개 더 보기"
+      "showMore": "+ {count}개 더 보기",
+      "showResults": "{count}건 결과 보기"
     },
     "languageLabel": {
       "korean": "한국어",

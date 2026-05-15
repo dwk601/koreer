@@ -56,7 +56,8 @@
       "location_state": "State",
       "salary_bucket": "Salary",
       "showFewer": "− Show fewer",
-      "showMore": "+ Show {count} more"
+      "showMore": "+ Show {count} more",
+      "showResults": "Show {count} results"
     },
     "languageLabel": {
       "korean": "Korean",
