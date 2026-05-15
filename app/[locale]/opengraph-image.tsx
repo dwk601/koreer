@@ -15,9 +15,9 @@ export const alt = "Koreer";
 export default async function OpengraphImage({
   params,
 }: {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
-  const { locale } = params;
+  const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "app" });
 
   const isKo = locale === "ko";
