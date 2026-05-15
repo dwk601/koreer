@@ -3,24 +3,27 @@ import { getTranslations } from "next-intl/server";
 import { Link } from "@/lib/i18n/navigation";
 
 /**
- * Cursor-based pagination.
+ * Cursor-based pagination with page indicator.
  *
  * The API returns a single forward `next_cursor`; there is no backward cursor
  * so we keep the pattern simple:
  *   - "Back to first" when we're past page 1 (cursor is set on the URL)
  *   - "Next page" when `next_cursor` is present
+ *   - "Page X" label in the center showing the current page
  *
  * `baseQuery` carries every filter/sort the user had applied minus `cursor`
- * itself so these links preserve state.
+ * and `page` itself so these links preserve state.
  */
 export async function Pagination({
   baseQuery,
   cursor,
   nextCursor,
+  page = 1,
 }: {
   baseQuery: string;
   cursor?: string;
   nextCursor?: string | null;
+  page?: number;
 }) {
   const t = await getTranslations("jobs.pagination");
   if (!cursor && !nextCursor) return null;
@@ -30,7 +33,7 @@ export async function Pagination({
   const nextHref =
     "/jobs?" +
     (baseQuery ? `${baseQuery}&` : "") +
-    `cursor=${encodeURIComponent(nextCursor ?? "")}`;
+    `cursor=${encodeURIComponent(nextCursor ?? "")}&page=${page + 1}`;
 
   return (
     <nav
@@ -41,7 +44,7 @@ export async function Pagination({
         {cursor && (
           <Link
             href={firstHref}
-            className="inline-flex items-center gap-1 rounded-full border border-border bg-surface px-4 py-2 font-medium text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
+            className="inline-flex items-center gap-1 h-10 min-h-touch rounded-full border border-border bg-surface px-4 font-medium text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
           >
             <svg
               aria-hidden
@@ -63,10 +66,16 @@ export async function Pagination({
       </div>
 
       <div>
+        <span aria-current="page" className="text-ink-mute">
+          {t("page", { page })}
+        </span>
+      </div>
+
+      <div>
         {nextCursor && (
           <Link
             href={nextHref}
-            className="group inline-flex items-center gap-1.5 rounded-full bg-accent px-5 py-2 font-medium text-accent-ink transition-opacity hover:opacity-90"
+            className="group inline-flex items-center gap-1.5 h-11 min-h-touch-primary rounded-full bg-accent px-5 font-medium text-accent-ink transition-opacity hover:opacity-90"
           >
             {t("next")}
             <svg

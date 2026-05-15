@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
+import { tokens } from "@/lib/tokens";
 
 // Image metadata
 export const runtime = "nodejs";
@@ -30,14 +31,14 @@ export default async function OpengraphImage({
         style={{
           width: "100%",
           height: "100%",
-          background: "#fafaf7",
+          background: tokens.colors.bg,
           display: "flex",
           flexDirection: "column",
           justifyContent: "space-between",
           padding: 80,
           fontFamily:
             "Pretendard, -apple-system, BlinkMacSystemFont, system-ui, 'Apple SD Gothic Neo', 'Noto Sans KR', sans-serif",
-          color: "#141311",
+          color: tokens.colors.ink,
         }}
       >
         <div style={{ display: "flex", alignItems: "center", gap: 16 }}>
@@ -46,7 +47,7 @@ export default async function OpengraphImage({
               width: 20,
               height: 20,
               borderRadius: 999,
-              background: "#1c2b2b",
+              background: tokens.colors.accent,
             }}
           />
           <span style={{ fontSize: 28, fontWeight: 600, letterSpacing: -0.3 }}>
@@ -57,7 +58,7 @@ export default async function OpengraphImage({
           <div
             style={{
               fontSize: 32,
-              color: "#6f6d67",
+              color: tokens.colors.inkMute,
               letterSpacing: isKo ? -0.2 : -0.5,
               textTransform: "uppercase",
             }}

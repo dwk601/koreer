@@ -78,8 +78,9 @@ export default async function HomePage({
           </p>
           <h1 className="mt-5 max-w-4xl type-display">
             {t("home.heroTitle")}
-            <br />
-            <span className="text-ink-mute">{t("home.heroTitleAccent")}</span>
+            <span className="block mt-2 type-headline text-ink-mute">
+              {t("home.heroTitleAccent")}
+            </span>
           </h1>
           <p className="mt-6 max-w-xl type-body text-ink-soft">
             {t("home.heroSub")}
@@ -109,7 +110,7 @@ export default async function HomePage({
           </div>
           <Link
             href="/jobs"
-            className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-4 py-2 text-sm font-medium text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
+            className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-4 h-10 min-h-touch font-medium text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
           >
             {t("home.freshCta")}
             <svg

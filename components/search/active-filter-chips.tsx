@@ -89,7 +89,7 @@ export async function ActiveFilterChips({
     <div className="flex flex-wrap items-center gap-2">
       {chips.map((chip, i) => {
         const nextQs = toQueryString(
-          { ...params, cursor: undefined },
+          { ...params, cursor: undefined, page: undefined },
           chip.removeParams,
         );
         const href = nextQs ? `/jobs?${nextQs}` : "/jobs";
@@ -97,7 +97,7 @@ export async function ActiveFilterChips({
           <Link
             key={`${chip.label}-${i}`}
             href={href as "/jobs"}
-            className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-3 py-1 type-caption text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
+            className="group inline-flex items-center gap-1.5 h-10 min-h-touch rounded-full border border-border bg-surface px-3 type-caption text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
           >
             <span className="font-medium">{chip.label}</span>
             <svg

@@ -43,7 +43,7 @@ export function HeaderNav() {
                   <Link
                     href={href}
                     className={cn(
-                      "relative inline-flex h-9 items-center rounded-md px-3 transition-colors",
+                      "relative inline-flex h-10 min-h-touch items-center rounded-md px-3 transition-colors",
                       active
                         ? "text-ink"
                         : "text-ink-mute hover:text-ink hover:bg-surface-muted",

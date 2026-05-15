@@ -318,5 +318,5 @@ Every card and detail header surfaces source + recency in the same way: `LANGUAG
 - **Don't** use bouncy, elastic, or spring easings. The system uses `cubic-bezier(0.22, 0.61, 0.36, 1)` (ease-out) at 120ms (fast) or 180ms (medium). No back-out, no bounce.
 - **Don't** strip the source label or post-date from a card to make it prettier. Provenance is part of the product.
 - **Don't** invent new accent colors for status. Status is `accent`, `surface-muted`, or a categorical chip (only when the status *is* a category).
-- **Don't** use em dashes (`—` or `--`). Use commas, colons, semicolons, periods, parentheses. *(The `·` middle dot used as a meta separator is fine; it is not punctuation.)*
+- **Don't** use em dashes (`—` or `--`) as UI placeholders for missing data. Always render a translated "Not listed" string per locale. Em dashes are permitted in editorial prose (this document, source comments, and long-form copy).
 - **Don't** decrease body text below 13px on primary content. The user base spans early-20s F-1 grads to 50+ 1.0-gen immigrants; readability is a product requirement.

@@ -111,7 +111,7 @@ export default async function JobDetailPage({ params }: Props) {
       <div className="text-sm">
         <Link
           href="/jobs"
-          className="inline-flex items-center gap-1 text-ink-mute transition-colors hover:text-ink"
+          className="inline-flex items-center gap-1 h-10 min-h-touch px-2 rounded-md text-ink-mute transition-colors hover:text-ink"
         >
           <svg aria-hidden viewBox="0 0 12 12" className="size-3">
             <path
@@ -142,12 +142,12 @@ export default async function JobDetailPage({ params }: Props) {
           {job.title}
         </h1>
         {job.company && (
-          <p className="text-lg text-ink-soft">{job.company}</p>
+          <p className="type-body text-ink-soft">{job.company}</p>
         )}
 
         {/* Meta grid */}
         <dl className="mt-2 grid grid-cols-1 gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
-          <MetaRow label={tDetail("location")} value={locationDisplay || "—"} />
+          <MetaRow label={tDetail("location")} value={locationDisplay || t("jobs.card.locationUnavailable")} />
           <MetaRow
             label={tDetail("salary")}
             value={salary ?? t("jobs.card.salaryUnavailable")}
@@ -157,7 +157,7 @@ export default async function JobDetailPage({ params }: Props) {
             value={
               job.post_date
                 ? `${postedRelative} · ${postedAbsolute}`
-                : "—"
+                : t("jobs.card.dateUnknown")
             }
           />
           <MetaRow label={tDetail("source")} value={sourceLabel} />
@@ -212,7 +212,7 @@ export default async function JobDetailPage({ params }: Props) {
 
       {/* Description */}
       {description && (
-        <section className="mt-8 whitespace-pre-line text-[15px] leading-relaxed text-ink-soft">
+        <section className="mt-8 max-w-2xl whitespace-pre-line type-body text-ink-soft">
           {description}
         </section>
       )}

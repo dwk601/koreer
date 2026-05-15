@@ -13,9 +13,11 @@ const DEFAULT_LIMIT = 20;
  * Parse loose URL search params into a typed `ListJobsParams` suitable for
  * `listJobs`/`getFacets`. Unknown/invalid values are dropped silently so
  * that a tampered URL never throws.
+ *
+ * Also parses `page` (UI-only, never sent to the API) for cursor-based pagination.
  */
-export function parseListParams(input: RawSearchParams): ListJobsParams {
-  const params: ListJobsParams = {};
+export function parseListParams(input: RawSearchParams): ListJobsParams & { page?: number } {
+  const params: ListJobsParams & { page?: number } = {};
 
   const q = firstString(input.q);
   if (q) params.q = q.slice(0, 200);
@@ -65,18 +67,23 @@ export function parseListParams(input: RawSearchParams): ListJobsParams {
   const limit = asInt(input.limit);
   params.limit = clamp(limit ?? DEFAULT_LIMIT, LIMIT_MIN, LIMIT_MAX);
 
+  const page = asInt(input.page);
+  if (page !== undefined && page >= 1) params.page = page;
+
   return params;
 }
 
 /**
  * Serialize the currently active params back into a `URLSearchParams`.
  * Pass `overrides` to change one value while preserving the rest.
+ * 
+ * Note: `page` is UI-only and never serialized when it's 1 (the default).
  */
 export function toQueryString(
-  params: ListJobsParams,
-  overrides: Partial<ListJobsParams> = {},
+  params: ListJobsParams & { page?: number },
+  overrides: Partial<ListJobsParams & { page?: number }> = {},
 ): string {
-  const merged: ListJobsParams = { ...params, ...overrides };
+  const merged: ListJobsParams & { page?: number } = { ...params, ...overrides };
   const out = new URLSearchParams();
 
   if (merged.q) out.set("q", merged.q);
@@ -100,6 +107,7 @@ export function toQueryString(
   if (merged.cursor) out.set("cursor", merged.cursor);
   if (merged.limit && merged.limit !== DEFAULT_LIMIT)
     out.set("limit", String(merged.limit));
+  if (merged.page && merged.page > 1) out.set("page", String(merged.page));
 
   return out.toString();
 }

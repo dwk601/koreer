@@ -30,7 +30,7 @@ export function SortSelect({
 
   function onChange(e: React.ChangeEvent<HTMLSelectElement>) {
     const nextSort = e.target.value as JobSort;
-    const next = { ...params, sort: nextSort, cursor: undefined };
+    const next = { ...params, sort: nextSort, cursor: undefined, page: undefined };
     const qs = toQueryString(next);
     const href = qs ? `/jobs?${qs}` : "/jobs";
     startTransition(() => {
@@ -41,17 +41,31 @@ export function SortSelect({
   return (
     <label className={className}>
       <span className="sr-only">{t("label")}</span>
-      <select
-        value={current}
-        onChange={onChange}
-        className="h-9 rounded-full border border-border bg-surface px-4 pr-8 text-sm font-medium text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
-      >
-        {OPTIONS.map((opt) => (
-          <option key={opt} value={opt}>
-            {t(opt)}
-          </option>
-        ))}
-      </select>
+      <div className="relative">
+        <select
+          value={current}
+          onChange={onChange}
+          className="appearance-none h-10 min-h-touch rounded-full border border-border bg-surface px-4 pr-9 text-sm font-medium text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
+        >
+          {OPTIONS.map((opt) => (
+            <option key={opt} value={opt}>
+              {t(opt)}
+            </option>
+          ))}
+        </select>
+        <svg
+          aria-hidden
+          viewBox="0 0 12 12"
+          className="absolute right-3 top-1/2 -translate-y-1/2 size-[0.625rem] pointer-events-none text-ink-mute"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M2 4 L6 8 L10 4" />
+        </svg>
+      </div>
     </label>
   );
 }

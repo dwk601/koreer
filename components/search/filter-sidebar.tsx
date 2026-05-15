@@ -32,7 +32,7 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  function navigate(next: ListJobsParams) {
+  function navigate(next: ListJobsParams & { page?: number }) {
     const qs = toQueryString(next);
     const href = qs ? `/jobs?${qs}` : "/jobs";
     startTransition(() => {
@@ -49,6 +49,7 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
       ...params,
       [key]: next.length ? next : undefined,
       cursor: undefined,
+      page: undefined,
     });
   }
 
@@ -58,7 +59,7 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
   ) {
     const nextVal =
       (params[key] as unknown) === (value as unknown) ? undefined : value;
-    navigate({ ...params, [key]: nextVal, cursor: undefined });
+    navigate({ ...params, [key]: nextVal, cursor: undefined, page: undefined });
   }
 
   function setSalaryBucket(bucket: SalaryBucket) {
@@ -69,6 +70,7 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
         salary_min: undefined,
         salary_max: undefined,
         cursor: undefined,
+        page: undefined,
       });
       return;
     }
@@ -78,6 +80,7 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
       salary_min: range.salary_min,
       salary_max: range.salary_max,
       cursor: undefined,
+      page: undefined,
     });
   }
 
@@ -105,6 +108,7 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
           selected={params.source ?? []}
           onToggle={(v) => toggleMulti("source", v)}
           labelFor={(v) => formatSourceLabel(v)}
+          t={t}
         />
       </FacetSection>
 
@@ -122,6 +126,7 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
           labelFor={(v) =>
             tLang(v as "korean" | "english" | "bilingual")
           }
+          t={t}
         />
       </FacetSection>
 
@@ -132,6 +137,7 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
           selected={params.job_category ?? []}
           onToggle={(v) => toggleMulti("job_category", v)}
           labelFor={(v) => capitalize(v.replace(/_/g, " "))}
+          t={t}
         />
       </FacetSection>
 
@@ -142,6 +148,7 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
           selected={params.location_state}
           onSelect={(v) => setSingle("location_state", v)}
           labelFor={(v) => v}
+          t={t}
         />
       </FacetSection>
 
@@ -209,7 +216,7 @@ function FacetSection({
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-2 text-left text-[13px] font-semibold uppercase tracking-[0.16em] text-ink"
+        className="flex w-full items-center justify-between gap-2 text-left text-[13px] font-semibold uppercase tracking-[0.16em] text-ink min-h-touch py-2"
         aria-expanded={open}
       >
         {title}
@@ -241,11 +248,13 @@ function CheckboxList({
   selected,
   onToggle,
   labelFor,
+  t,
 }: {
   options: Array<[string, number]>;
   selected: string[];
   onToggle: (v: string) => void;
   labelFor: (v: string) => string;
+  t: (key: string, opts?: Record<string, number>) => string;
 }) {
   const [showAll, setShowAll] = useState(false);
   const visible = showAll ? options : options.slice(0, MAX_OPTIONS_COLLAPSED);
@@ -258,7 +267,7 @@ function CheckboxList({
             <li key={value}>
               <label
                 className={cn(
-                  "group flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 type-caption transition-colors",
+                  "group flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-2 min-h-touch type-caption transition-colors",
                   isChecked
                     ? "bg-surface-muted text-ink"
                     : "text-ink-soft hover:bg-surface-muted/60 hover:text-ink",
@@ -285,9 +294,9 @@ function CheckboxList({
         <button
           type="button"
           onClick={() => setShowAll((v) => !v)}
-          className="mt-2 text-xs font-medium text-ink-mute hover:text-ink"
+          className="mt-2 h-9 min-h-touch px-2 rounded-md type-caption font-medium text-ink-mute hover:text-ink hover:bg-surface-muted/60"
         >
-          {showAll ? "− Show fewer" : `+ Show ${options.length - MAX_OPTIONS_COLLAPSED} more`}
+          {showAll ? t("showFewer") : t("showMore", { count: options.length - MAX_OPTIONS_COLLAPSED })}
         </button>
       )}
     </div>
@@ -299,11 +308,13 @@ function RadioList({
   selected,
   onSelect,
   labelFor,
+  t,
 }: {
   options: Array<[string, number]>;
   selected?: string;
   onSelect: (v: string) => void;
   labelFor: (v: string) => string;
+  t: (key: string, opts?: Record<string, number>) => string;
 }) {
   const [showAll, setShowAll] = useState(false);
   const visible = showAll ? options : options.slice(0, MAX_OPTIONS_COLLAPSED);
@@ -316,7 +327,7 @@ function RadioList({
             <li key={value}>
               <label
                 className={cn(
-                  "group flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 type-caption transition-colors",
+                  "group flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-2 min-h-touch type-caption transition-colors",
                   isActive
                     ? "bg-surface-muted text-ink"
                     : "text-ink-soft hover:bg-surface-muted/60 hover:text-ink",
@@ -343,9 +354,9 @@ function RadioList({
         <button
           type="button"
           onClick={() => setShowAll((v) => !v)}
-          className="mt-2 text-xs font-medium text-ink-mute hover:text-ink"
+          className="mt-2 h-9 min-h-touch px-2 rounded-md type-caption font-medium text-ink-mute hover:text-ink hover:bg-surface-muted/60"
         >
-          {showAll ? "− Show fewer" : `+ Show ${options.length - MAX_OPTIONS_COLLAPSED} more`}
+          {showAll ? t("showFewer") : t("showMore", { count: options.length - MAX_OPTIONS_COLLAPSED })}
         </button>
       )}
     </div>

@@ -30,6 +30,7 @@
 
   /* Focus + motion */
   --color-focus: #a38b2d;
+  --shadow-tint: 22 20 15;
   --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
   --dur-fast: 120ms;
   --dur-med: 180ms;
@@ -94,6 +95,7 @@
     --color-chip-bi-bg: #1d1b2e;
     --color-chip-bi-ink: #b4b0e0;
     --color-focus: #eadba0;
+    --shadow-tint: 0 0 0;
   }
 }
 
@@ -177,6 +179,18 @@
   letter-spacing: var(--tracking-label);
   font-weight: var(--weight-label);
   text-transform: uppercase;
+}
+
+/* ── Touch target utility ───────────────────────────────────────────────
+ * Ensures interactive controls meet the 40px minimum tap target floor.
+ * Usage: <button className="min-h-touch">
+ */
+@utility min-h-touch {
+  min-height: 2.5rem;
+}
+
+@utility min-h-touch-primary {
+  min-height: 2.75rem;
 }
 
 html,

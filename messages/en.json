@@ -2,7 +2,8 @@
   "app": {
     "name": "Koreer",
     "tagline": "Job search for Korean speakers in the US",
-    "description": "Fresh openings from Indeed, LinkedIn, and Korean community sites — posted within the last 60 days. One place, fast."
+    "description": "Fresh openings from Indeed, LinkedIn, and Korean community sites, posted within the last 60 days. One place, fast.",
+    "loading": "Loading"
   },
   "nav": {
     "home": "Home",
@@ -53,7 +54,9 @@
       "language": "Listing language",
       "job_category": "Category",
       "location_state": "State",
-      "salary_bucket": "Salary"
+      "salary_bucket": "Salary",
+      "showFewer": "− Show fewer",
+      "showMore": "+ Show {count} more"
     },
     "languageLabel": {
       "korean": "Korean",
@@ -69,13 +72,15 @@
     },
     "pagination": {
       "next": "Next page",
-      "first": "Back to first"
+      "first": "Back to first",
+      "page": "Page {page}"
     },
     "card": {
       "postedAgo": "{days}d ago",
       "postedToday": "Today",
       "salaryUnavailable": "Salary not listed",
       "dateUnknown": "Posting date not listed",
+      "locationUnavailable": "Location not listed",
       "languageChip": "Language"
     },
     "suggest": {
@@ -93,6 +98,8 @@
     "applyExternal": "Apply",
     "applyNote": "You will leave Koreer",
     "backToList": "Back to jobs",
+    "notFoundTitle": "Job not found",
+    "notFoundSub": "This posting may have been removed or expired.",
     "relatedEyebrow": "More from {source}",
     "relatedTitle": "Recently posted by this source"
   },

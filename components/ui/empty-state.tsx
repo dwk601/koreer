@@ -5,11 +5,13 @@ export function EmptyState({
   description,
   action,
   className,
+  as: Component = "h2",
 }: {
   title: string;
   description?: string;
   action?: React.ReactNode;
   className?: string;
+  as?: "h1" | "h2";
 }) {
   return (
     <div
@@ -35,9 +37,9 @@ export function EmptyState({
           <path d="m17 17-3.2-3.2" />
         </svg>
       </div>
-      <h2 className="type-title text-ink">
+      <Component className="type-title text-ink">
         {title}
-      </h2>
+      </Component>
       {description && (
         <p className="mt-2 max-w-md type-caption text-ink-mute">{description}</p>
       )}

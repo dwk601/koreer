@@ -38,6 +38,7 @@ export function SearchBar({
   const t = useTranslations();
   const router = useRouter();
   const listId = useId();
+  const inputId = useId();
 
   const [value, setValue] = useState(initialQuery);
   const [open, setOpen] = useState(false);
@@ -156,7 +157,7 @@ export function SearchBar({
         role="search"
         onSubmit={onSubmit}
         className={cn(
-          "relative flex w-full items-center gap-2 rounded-full border border-border-strong bg-surface shadow-[0_1px_0_0_rgba(0,0,0,0.04)] transition-shadow focus-within:shadow-[0_6px_24px_-12px_rgba(0,0,0,0.25)]",
+          "relative flex w-full items-center gap-2 rounded-full border border-border-strong bg-surface shadow-[0_1px_0_0_rgb(var(--shadow-tint)/0.04)] transition-shadow focus-within:shadow-[0_6px_24px_-12px_rgb(var(--shadow-tint)/0.25)]",
           variant === "hero" ? "h-14 pl-5 pr-1.5" : "h-11 pl-4 pr-1",
         )}
       >
@@ -169,12 +170,12 @@ export function SearchBar({
         >
           <SearchIcon />
         </span>
-        <label htmlFor="q" className="sr-only">
+        <label htmlFor={inputId} className="sr-only">
           {t("jobs.searchLabel")}
         </label>
         <input
           ref={inputRef}
-          id="q"
+          id={inputId}
           name="q"
           role="combobox"
           aria-autocomplete="list"
@@ -197,8 +198,8 @@ export function SearchBar({
         <button
           type="submit"
           className={cn(
-            "shrink-0 rounded-full bg-accent px-5 font-medium text-accent-ink transition-opacity hover:opacity-90",
-            variant === "hero" ? "h-11 text-sm" : "h-9 text-[13px] px-4",
+            "shrink-0 rounded-full bg-accent px-5 font-medium text-accent-ink transition-opacity hover:opacity-90 min-h-touch-primary",
+            variant === "hero" ? "h-11 text-sm" : "h-11 text-[13px] px-4",
           )}
         >
           {t("home.searchSubmit")}
@@ -209,7 +210,7 @@ export function SearchBar({
         <ul
           id={listId}
           role="listbox"
-          className="absolute left-0 right-0 top-full z-20 mt-2 max-h-80 overflow-auto rounded-2xl border border-border bg-surface p-1.5 shadow-[0_24px_60px_-24px_rgba(0,0,0,0.35)]"
+          className="absolute left-0 right-0 top-full z-20 mt-2 max-h-80 overflow-auto rounded-2xl border border-border bg-surface p-1.5 shadow-[0_24px_60px_-24px_rgb(var(--shadow-tint)/0.35)]"
         >
           {loading && items.length === 0 && (
             <li className="px-3 py-3 text-sm text-ink-mute">

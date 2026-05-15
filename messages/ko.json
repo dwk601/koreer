@@ -2,7 +2,8 @@
   "app": {
     "name": "코리어",
     "tagline": "한인을 위한 빠른 구직",
-    "description": "인디드·링크드인·한인 커뮤니티 사이트에서 모은 최근 60일 이내 구인 공고. 한 곳에서 빠르게."
+    "description": "인디드·링크드인·한인 커뮤니티 사이트에서 모은 최근 60일 이내 구인 공고. 한 곳에서 빠르게.",
+    "loading": "불러오는 중"
   },
   "nav": {
     "home": "홈",
@@ -53,7 +54,9 @@
       "language": "공고 언어",
       "job_category": "직군",
       "location_state": "지역 (주)",
-      "salary_bucket": "급여 구간"
+      "salary_bucket": "급여 구간",
+      "showFewer": "− 접기",
+      "showMore": "+ {count}개 더 보기"
     },
     "languageLabel": {
       "korean": "한국어",
@@ -69,13 +72,15 @@
     },
     "pagination": {
       "next": "다음 페이지",
-      "first": "처음으로"
+      "first": "처음으로",
+      "page": "{page}페이지"
     },
     "card": {
       "postedAgo": "{days}일 전",
       "postedToday": "오늘",
       "salaryUnavailable": "급여 미기재",
       "dateUnknown": "등록일 미기재",
+      "locationUnavailable": "지역 미기재",
       "languageChip": "공고 언어"
     },
     "suggest": {
@@ -93,6 +98,8 @@
     "applyExternal": "지원하기",
     "applyNote": "외부 사이트로 이동합니다",
     "backToList": "목록으로",
+    "notFoundTitle": "해당 공고를 찾을 수 없습니다",
+    "notFoundSub": "삭제되었거나 만료된 공고일 수 있습니다.",
     "relatedEyebrow": "{source}의 다른 공고",
     "relatedTitle": "이 출처의 최근 공고"
   },

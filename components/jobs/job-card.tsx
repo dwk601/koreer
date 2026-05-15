@@ -36,27 +36,39 @@ export async function JobCard({
   const languageLabel = LANGUAGE_LABEL[job.language] ?? job.language;
   const sourceLabel = formatSourceLabel(job.source);
 
+  // Build accessible aria-label with full provenance
+  const ariaLabelParts = [
+    job.title,
+    job.company,
+    location || t("card.locationUnavailable"),
+    salary || t("card.salaryUnavailable"),
+    posted || t("card.dateUnknown"),
+    languageLabel,
+    sourceLabel,
+  ].filter(Boolean);
+  const ariaLabel = ariaLabelParts.join(", ");
+
   return (
     <article
       className={cn(
         "group relative flex h-full flex-col gap-3 rounded-xl border border-border bg-surface p-5 transition-[border-color,box-shadow,transform]",
-        "hover:border-border-strong hover:shadow-[0_8px_28px_-18px_rgba(0,0,0,0.22)]",
+        "hover:border-border-strong hover:shadow-[0_8px_28px_-18px_rgb(var(--shadow-tint)/0.22)] hover:-translate-y-px",
         className,
       )}
     >
       <Link
         href={`/jobs/${job.id}`}
-        className="absolute inset-0 z-0 rounded-xl focus:outline-none"
-        aria-label={job.title}
+        className="absolute inset-0 z-10 rounded-xl focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[color:var(--color-focus)] focus-visible:rounded-xl focus:outline-none"
+        aria-label={ariaLabel}
       />
 
-      <div className="relative z-10 flex items-start justify-between gap-3">
+      <div className="pointer-events-none relative z-0 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="line-clamp-2 type-card-title text-ink">
             {job.title}
           </h3>
           {job.company && (
-            <p className="mt-1 truncate text-[13px] text-ink-soft">
+            <p className="mt-1 truncate type-caption text-ink-soft">
               {job.company}
             </p>
           )}
@@ -64,30 +76,30 @@ export async function JobCard({
         <LanguageChip
           language={job.language}
           label={languageLabel}
-          className="relative z-10 shrink-0"
+          className="relative z-10 shrink-0 pointer-events-auto"
         />
       </div>
 
-      <div className="relative z-10 flex flex-wrap items-center gap-x-2.5 gap-y-1 type-caption text-ink-mute">
+      <div className="pointer-events-none relative z-0 flex flex-wrap items-center gap-x-2.5 gap-y-1 type-caption text-ink-mute">
         {location && <span className="truncate">{location}</span>}
         {location && <DotSep />}
         {salary ? (
           <span className="font-medium text-ink-soft">{salary}</span>
         ) : (
           variant === "default" && (
-            <span className="text-ink-mute/80">{t("card.salaryUnavailable")}</span>
+            <span className="text-ink-mute">{t("card.salaryUnavailable")}</span>
           )
         )}
         {salary && <DotSep />}
         {posted != null ? (
           <span>{posted}</span>
         ) : (
-          <span className="text-ink-mute/80">{t("card.dateUnknown")}</span>
+          <span className="text-ink-mute">{t("card.dateUnknown")}</span>
         )}
       </div>
 
       {variant === "default" && (
-        <div className="relative z-10 mt-auto flex items-center justify-between pt-2 type-label text-ink-mute">
+        <div className="pointer-events-none relative z-0 mt-auto flex items-center justify-between pt-2 type-label text-ink-mute">
           <span className="type-label">{sourceLabel}</span>
           <svg
             aria-hidden

@@ -6,6 +6,7 @@ import { SearchBar } from "@/components/search/search-bar";
 import { Pagination } from "@/components/jobs/pagination";
 import { EmptyState } from "@/components/ui/empty-state";
 import { FilterSidebar } from "@/components/search/filter-sidebar";
+import { FilterSheet } from "@/components/search/filter-sheet";
 import { SortSelect } from "@/components/search/sort-select";
 import { ActiveFilterChips } from "@/components/search/active-filter-chips";
 import { Link } from "@/lib/i18n/navigation";
@@ -76,7 +77,12 @@ export default async function JobsPage({ params, searchParams }: Props) {
             <div className="min-w-0 flex-1">
               <ActiveFilterChips params={parsed} />
             </div>
-            <SortSelect params={parsed} />
+            <div className="flex items-center gap-2">
+              <Suspense fallback={null}>
+                <MobileFilterTrigger parsed={parsed} />
+              </Suspense>
+              <SortSelect params={parsed} />
+            </div>
           </div>
 
           <Suspense
@@ -117,8 +123,45 @@ async function SidebarFetcher({
     };
   }
   return (
-    <div className="lg:sticky lg:top-24 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto lg:pr-2">
+    <div className="hidden lg:block lg:sticky lg:top-24 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto lg:pr-2">
       <FilterSidebar params={parsed} facets={facets} allSources={allSources} />
+    </div>
+  );
+}
+
+async function MobileFilterTrigger({
+  parsed,
+}: {
+  parsed: ReturnType<typeof parseListParams>;
+}) {
+  let facets: Facets;
+  let allSources: Record<string, number> | undefined;
+  let resultCount = 0;
+  try {
+    const [listRes, statsRes] = await Promise.all([
+      listJobs(parsed),
+      getStats(),
+    ]);
+    facets = listRes.facets;
+    allSources = statsRes.by_source;
+    resultCount = listRes.total_estimated;
+  } catch {
+    facets = {
+      source: {},
+      language: {},
+      job_category: {},
+      location_state: {},
+      salary_bucket: {},
+    };
+  }
+  return (
+    <div className="lg:hidden">
+      <FilterSheet
+        params={parsed}
+        facets={facets}
+        allSources={allSources}
+        resultCount={resultCount}
+      />
     </div>
   );
 }
@@ -163,7 +206,7 @@ async function Results({
             hasActiveFilters(parsed) ? (
               <Link
                 href="/jobs"
-                className="inline-flex h-9 items-center rounded-full border border-border bg-surface px-4 text-sm font-medium text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
+                className="inline-flex h-10 min-h-touch items-center rounded-full border border-border bg-surface px-4 text-sm font-medium text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
               >
                 {t("clearFilters")}
               </Link>
@@ -192,14 +235,21 @@ async function Results({
         baseQuery={baseQs}
         cursor={parsed.cursor}
         nextCursor={list.next_cursor}
+        page={parsed.page ?? 1}
       />
     </section>
   );
 }
 
-function SidebarSkeleton() {
+async function SidebarSkeleton() {
+  const t = await getTranslations("app");
   return (
-    <div className="animate-pulse space-y-4">
+    <div
+      aria-busy="true"
+      aria-live="polite"
+      className="motion-safe:animate-pulse motion-reduce:opacity-70 space-y-4"
+    >
+      <span className="sr-only">{t("loading")}</span>
       {Array.from({ length: 5 }).map((_, i) => (
         <div key={i} className="space-y-2 border-b border-border py-3">
           <div className="h-3 w-24 rounded bg-surface-muted" />
@@ -212,9 +262,15 @@ function SidebarSkeleton() {
   );
 }
 
-function ResultsSkeleton() {
+async function ResultsSkeleton() {
+  const t = await getTranslations("app");
   return (
-    <div className="mt-4 animate-pulse">
+    <div
+      aria-busy="true"
+      aria-live="polite"
+      className="mt-4 motion-safe:animate-pulse motion-reduce:opacity-70"
+    >
+      <span className="sr-only">{t("loading")}</span>
       <div className="h-4 w-56 rounded bg-surface-muted" />
       <ul className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
         {Array.from({ length: 6 }).map((_, i) => (

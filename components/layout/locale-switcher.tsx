@@ -15,7 +15,7 @@ export function LocaleSwitcher() {
 
   return (
     <div
-      className="flex items-center rounded-md border border-border bg-surface p-0.5 text-xs"
+      className="flex items-center rounded-md border border-border bg-surface p-0.5 text-xs min-h-touch"
       role="group"
       aria-label={t("switcher")}
     >
@@ -25,14 +25,15 @@ export function LocaleSwitcher() {
           <button
             key={l}
             type="button"
-            disabled={isActive || isPending}
+            disabled={isPending}
             onClick={() => {
+              if (isActive) return;
               startTransition(() => {
                 router.replace(pathname, { locale: l });
               });
             }}
             className={
-              "rounded-[5px] px-2 py-1 transition-colors " +
+              "rounded-[5px] px-2 py-1 h-9 min-h-touch transition-colors " +
               (isActive
                 ? "bg-accent text-accent-ink"
                 : "text-ink-mute hover:text-ink hover:bg-surface-muted")
