@@ -91,6 +91,9 @@ export default async function LocaleLayout({
       className={cn(geistSans.variable, pretendard.variable, "h-full antialiased")}
       suppressHydrationWarning
     >
+      <head>
+        <script defer src="https://analytics.gongu.xyz/script.js" data-website-id="2750615d-b6a3-4664-a923-c010ed7011f0"></script>
+      </head>
       <body
         className="min-h-full flex flex-col bg-bg text-ink"
         style={
