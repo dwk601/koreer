@@ -73,15 +73,15 @@ export default async function JobsPage({ params, searchParams }: Props) {
         </Suspense>
 
         <div>
-          <div className="flex flex-wrap items-center justify-between gap-3">
-            <div className="min-w-0 flex-1">
-              <ActiveFilterChips params={parsed} />
-            </div>
-            <div className="flex items-center gap-2">
+          <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between">
+            <div className="flex items-center gap-2 lg:order-2 shrink-0">
               <Suspense fallback={null}>
                 <MobileFilterTrigger parsed={parsed} />
               </Suspense>
               <SortSelect params={parsed} />
+            </div>
+            <div className="min-w-0 flex-1 lg:order-1">
+              <ActiveFilterChips params={parsed} />
             </div>
           </div>
 
