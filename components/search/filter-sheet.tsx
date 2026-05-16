@@ -129,7 +129,7 @@ export function FilterSheet({
         ref={dialogRef}
         onClick={handleBackdropClick}
         onKeyDown={handleKeyDown}
-        className="fixed inset-0 z-40 max-h-[85dvh] w-full rounded-t-2xl border-t border-border bg-bg p-0 backdrop:bg-black/40 motion-safe:animate-in motion-safe:slide-in-from-bottom-10 motion-reduce:animate-none"
+        className="fixed inset-0 z-40 mt-auto mb-0 max-h-[92dvh] w-full rounded-t-2xl border-t border-border bg-bg p-0 backdrop:bg-black/40 motion-safe:animate-in motion-safe:slide-in-from-bottom-10 motion-reduce:animate-none"
       >
         <div className="flex flex-col h-full">
           {/* Header */}
@@ -179,7 +179,7 @@ export function FilterSheet({
           </div>
 
           {/* Footer */}
-          <div className="border-t border-border bg-surface px-4 py-4 sm:px-6">
+          <div className="border-t border-border bg-surface px-4 pt-4 pb-[max(16px,env(safe-area-inset-bottom))] sm:px-6">
             <button
               type="button"
               onClick={hasResults ? applyFilters : undefined}
