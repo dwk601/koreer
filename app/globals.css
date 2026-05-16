@@ -243,6 +243,11 @@ article p,
   transition-timing-function: var(--ease-out);
 }
 
+/* dialog::backdrop — solid overlay that respects reduced-motion */
+dialog::backdrop {
+  background: rgba(0, 0, 0, 0.4);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -250,5 +255,16 @@ article p,
     animation-duration: 0.001ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
+  }
+
+  /* Instant visibility for dialogs — no slide-in animation, no backdrop fade */
+  dialog[open] {
+    opacity: 1 !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  dialog[open]::backdrop {
+    animation: none !important;
   }
 }
