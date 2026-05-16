@@ -57,7 +57,9 @@
       "salary_bucket": "Salary",
       "showFewer": "− Show fewer",
       "showMore": "+ Show {count} more",
-      "showResults": "Show {count} results"
+      "showResults": "Show {count} results",
+      "resetAll": "Reset all",
+      "noResults": "No matching results"
     },
     "languageLabel": {
       "korean": "Korean",

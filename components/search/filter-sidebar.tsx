@@ -23,16 +23,37 @@ type Props = {
   facets: Facets;
   allSources?: Record<string, number>;
   className?: string;
+  /** "instant" (default) navigates on every toggle. "batch" calls onChange and defers navigation. */
+  mode?: "instant" | "batch";
+  /** In batch mode, the initial params to seed the draft state. */
+  initialParams?: ListJobsParams;
+  /** Called in batch mode when the draft changes. */
+  onChange?: (next: ListJobsParams) => void;
 };
 
-export function FilterSidebar({ params, facets, allSources, className }: Props) {
+export function FilterSidebar({
+  params,
+  facets,
+  allSources,
+  className,
+  mode = "instant",
+  initialParams,
+  onChange,
+}: Props) {
   const t = useTranslations("jobs.filter");
   const tLang = useTranslations("jobs.languageLabel");
   const tSalary = useTranslations("jobs.salaryLabel");
   const router = useRouter();
   const [pending, startTransition] = useTransition();
 
-  function navigate(next: ListJobsParams & { page?: number }) {
+  // Batch mode: managed draft state, seeded from initialParams
+  const isBatch = mode === "batch";
+  const [draft, setDraft] = useState<ListJobsParams>(initialParams ?? params);
+
+  // The source of truth for checkbox/radio selections and active state
+  const currentParams: ListJobsParams = isBatch ? draft : params;
+
+  function navigatePaged(next: ListJobsParams & { page?: number }) {
     const qs = toQueryString(next);
     const href = qs ? `/jobs?${qs}` : "/jobs";
     startTransition(() => {
@@ -40,16 +61,25 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
     });
   }
 
+  /** Apply a param change: navigate in instant mode, fire onChange in batch. */
+  function applyChange(next: ListJobsParams) {
+    if (isBatch) {
+      setDraft(next);
+      onChange?.(next);
+    } else {
+      navigatePaged({ ...next, page: undefined });
+    }
+  }
+
   function toggleMulti(key: "source" | "job_category", value: string) {
-    const current = params[key] ?? [];
+    const current = currentParams[key] ?? [];
     const next = current.includes(value)
       ? current.filter((v) => v !== value)
       : [...current, value];
-    navigate({
-      ...params,
+    applyChange({
+      ...currentParams,
       [key]: next.length ? next : undefined,
       cursor: undefined,
-      page: undefined,
     });
   }
 
@@ -58,54 +88,59 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
     value: ListJobsParams[K] | undefined,
   ) {
     const nextVal =
-      (params[key] as unknown) === (value as unknown) ? undefined : value;
-    navigate({ ...params, [key]: nextVal, cursor: undefined, page: undefined });
+      (currentParams[key] as unknown) === (value as unknown)
+        ? undefined
+        : value;
+    applyChange({
+      ...currentParams,
+      [key]: nextVal,
+      cursor: undefined,
+    });
   }
 
   function setSalaryBucket(bucket: SalaryBucket) {
-    const active = inferSalaryBucket(params);
+    const active = inferSalaryBucket(currentParams);
     if (active === bucket) {
-      navigate({
-        ...params,
+      applyChange({
+        ...currentParams,
         salary_min: undefined,
         salary_max: undefined,
         cursor: undefined,
-        page: undefined,
       });
       return;
     }
     const range = bucketToRange(bucket);
-    navigate({
-      ...params,
+    applyChange({
+      ...currentParams,
       salary_min: range.salary_min,
       salary_max: range.salary_max,
       cursor: undefined,
-      page: undefined,
     });
   }
 
-  const activeBucket = useMemo(() => inferSalaryBucket(params), [params]);
+  const activeBucket = useMemo(
+    () => inferSalaryBucket(currentParams),
+    [currentParams],
+  );
 
   return (
     <aside
       className={cn(
         "flex flex-col gap-1",
-        pending && "opacity-70 transition-opacity",
+        !isBatch && pending && "opacity-70 transition-opacity",
         className,
       )}
       aria-label={t("title")}
     >
       {/* ---- Source ---- */}
-      <FacetSection title={t("source")}>
+      <FacetSection title={t("source")} defaultOpen={!isBatch}>
         <CheckboxList
           options={
             allSources
-              ? sortKeepZeros(
-                  mergeSources(allSources, facets.source),
-                )
+              ? sortKeepZeros(mergeSources(allSources, facets.source))
               : sortEntries(facets.source)
           }
-          selected={params.source ?? []}
+          selected={currentParams.source ?? []}
           onToggle={(v) => toggleMulti("source", v)}
           labelFor={(v) => formatSourceLabel(v)}
           t={t}
@@ -113,28 +148,26 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
       </FacetSection>
 
       {/* ---- Language ---- */}
-      <FacetSection title={t("language")}>
+      <FacetSection title={t("language")} defaultOpen={!isBatch}>
         <RadioList
           options={sortEntries(facets.language)}
-          selected={params.language}
+          selected={currentParams.language}
           onSelect={(v) =>
             setSingle(
               "language",
               v as NonNullable<ListJobsParams["language"]>,
             )
           }
-          labelFor={(v) =>
-            tLang(v as "korean" | "english" | "bilingual")
-          }
+          labelFor={(v) => tLang(v as "korean" | "english" | "bilingual")}
           t={t}
         />
       </FacetSection>
 
       {/* ---- Category ---- */}
-      <FacetSection title={t("job_category")}>
+      <FacetSection title={t("job_category")} defaultOpen={!isBatch}>
         <CheckboxList
           options={sortEntries(facets.job_category)}
-          selected={params.job_category ?? []}
+          selected={currentParams.job_category ?? []}
           onToggle={(v) => toggleMulti("job_category", v)}
           labelFor={(v) => capitalize(v.replace(/_/g, " "))}
           t={t}
@@ -142,10 +175,10 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
       </FacetSection>
 
       {/* ---- Location (state) ---- */}
-      <FacetSection title={t("location_state")}>
+      <FacetSection title={t("location_state")} defaultOpen={!isBatch}>
         <RadioList
           options={sortEntries(facets.location_state)}
-          selected={params.location_state}
+          selected={currentParams.location_state}
           onSelect={(v) => setSingle("location_state", v)}
           labelFor={(v) => v}
           t={t}
@@ -153,7 +186,7 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
       </FacetSection>
 
       {/* ---- Salary bucket ---- */}
-      <FacetSection title={t("salary_bucket")} defaultOpen>
+      <FacetSection title={t("salary_bucket")} defaultOpen={!isBatch}>
         <ul className="flex flex-col gap-1">
           {SALARY_BUCKETS.map((bucket) => {
             const count = facets.salary_bucket[bucket] ?? 0;
@@ -178,12 +211,14 @@ export function FilterSidebar({ params, facets, allSources, className }: Props) 
                       onChange={() => setSalaryBucket(bucket)}
                     />
                     <span className="truncate">
-                      {tSalary(bucket as
-                        | "free"
-                        | "under_40k"
-                        | "40k_80k"
-                        | "80k_120k"
-                        | "over_120k")}
+                      {tSalary(
+                        bucket as
+                          | "free"
+                          | "under_40k"
+                          | "40k_80k"
+                          | "80k_120k"
+                          | "over_120k",
+                      )}
                     </span>
                   </span>
                   <span className="tabular-nums type-caption text-ink-mute">
@@ -296,7 +331,11 @@ function CheckboxList({
           onClick={() => setShowAll((v) => !v)}
           className="mt-2 h-9 min-h-touch px-2 rounded-md type-caption font-medium text-ink-mute hover:text-ink hover:bg-surface-muted/60"
         >
-          {showAll ? t("showFewer") : t("showMore", { count: options.length - MAX_OPTIONS_COLLAPSED })}
+          {showAll
+            ? t("showFewer")
+            : t("showMore", {
+                count: options.length - MAX_OPTIONS_COLLAPSED,
+              })}
         </button>
       )}
     </div>
@@ -356,7 +395,11 @@ function RadioList({
           onClick={() => setShowAll((v) => !v)}
           className="mt-2 h-9 min-h-touch px-2 rounded-md type-caption font-medium text-ink-mute hover:text-ink hover:bg-surface-muted/60"
         >
-          {showAll ? t("showFewer") : t("showMore", { count: options.length - MAX_OPTIONS_COLLAPSED })}
+          {showAll
+            ? t("showFewer")
+            : t("showMore", {
+                count: options.length - MAX_OPTIONS_COLLAPSED,
+              })}
         </button>
       )}
     </div>
@@ -365,7 +408,9 @@ function RadioList({
 
 // ---------- helpers ----------
 
-function sortEntries(record: Record<string, number>): Array<[string, number]> {
+function sortEntries(
+  record: Record<string, number>,
+): Array<[string, number]> {
   return Object.entries(record)
     .filter(([, count]) => count > 0)
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
