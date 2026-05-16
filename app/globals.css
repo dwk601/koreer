@@ -243,9 +243,52 @@ article p,
   transition-timing-function: var(--ease-out);
 }
 
-/* dialog::backdrop — solid overlay that respects reduced-motion */
+/* ── dialog::backdrop — solid overlay that respects reduced-motion ──── */
+
 dialog::backdrop {
   background: rgba(0, 0, 0, 0.4);
+}
+
+/* ── Filter modal (full-screen on mobile) ────────────────────────────────
+ * Overrides the browser's default dialog centering so the filter sheet
+ * fills the viewport and slides in from the right.
+ */
+
+dialog.filter-modal {
+  width: 100%;
+  max-width: 100%;
+  height: 100%;
+  max-height: 100dvh;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: var(--color-bg);
+}
+
+@keyframes filter-modal-enter {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+dialog.filter-modal[open] {
+  animation: filter-modal-enter 280ms var(--ease-out) forwards;
+}
+
+@keyframes filter-backdrop-enter {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+dialog.filter-modal[open]::backdrop {
+  animation: filter-backdrop-enter 200ms var(--ease-out) forwards;
 }
 
 @media (prefers-reduced-motion: reduce) {
