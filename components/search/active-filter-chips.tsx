@@ -99,7 +99,7 @@ export async function ActiveFilterChips({
             href={href as "/jobs"}
             className="group inline-flex items-center gap-1.5 h-10 min-h-touch rounded-full border border-border bg-surface px-3 type-caption text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
           >
-            <span className="font-medium">{chip.label}</span>
+            <span className="font-medium max-w-40 truncate">{chip.label}</span>
             <svg
               aria-hidden
               viewBox="0 0 10 10"
