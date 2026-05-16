@@ -1,3 +1,14 @@
+/**
+ * Typed API callers for the koreaJobApiV2 REST API.
+ *
+ * All read functions (getJob, getJobByRecordId, listJobs, getStats, getFacets)
+ * are wrapped with React.cache() for per-request deduplication. This ensures
+ * that identical calls within a single render pass hit a cached promise,
+ * reducing upstream API load. Cross-request caching is handled by the
+ * upstream API's Redis layer.
+ */
+
+import { cache } from "react";
 import { apiFetch, type ApiFetchOptions } from "./client";
 import { freshnessCutoff } from "@/lib/date";
 import {
@@ -64,57 +75,78 @@ function toQuery(params: ListJobsParams): ApiFetchOptions["query"] {
   };
 }
 
-/** Primary list/search endpoint. */
-export async function listJobs(
-  params: ListJobsParams = {},
-  options: Pick<ApiFetchOptions, "revalidate" | "signal" | "tags" | "timeoutMs"> = {},
-): Promise<ListResponse> {
-  return apiFetch("/api/v1/jobs", listResponseSchema, {
-    query: toQuery(withFreshnessDefault(params)),
-    revalidate: 60,
-    tags: ["jobs:list"],
-    ...options,
-  });
-}
+/** Primary list/search endpoint.
+ * Per-request memoized via React.cache() — repeated calls with the same params object
+ * within one request hit a cached promise. Callers must pass the same params reference
+ * for dedup to work (the jobs list page does this via a single parseListParams call).
+ */
+export const listJobs = cache(
+  async (
+    params: ListJobsParams = {},
+    options: Pick<ApiFetchOptions, "revalidate" | "signal" | "tags" | "timeoutMs"> = {},
+  ): Promise<ListResponse> => {
+    return apiFetch("/api/v1/jobs", listResponseSchema, {
+      query: toQuery(withFreshnessDefault(params)),
+      revalidate: 60,
+      tags: ["jobs:list"],
+      ...options,
+    });
+  },
+);
 
-/** Filter-aware facet counts; useful for sidebar UIs. */
-export async function getFacets(
-  params: ListJobsParams = {},
-  options: Pick<ApiFetchOptions, "revalidate" | "signal" | "tags" | "timeoutMs"> = {},
-): Promise<FacetsResponse> {
-  return apiFetch("/api/v1/jobs/facets", facetsResponseSchema, {
-    query: toQuery(withFreshnessDefault(params)),
-    revalidate: 120,
-    tags: ["jobs:facets"],
-    ...options,
-  });
-}
+/** Filter-aware facet counts; useful for sidebar UIs.
+ * Per-request memoized via React.cache() — repeated calls with the same params object
+ * within one request hit a cached promise.
+ */
+export const getFacets = cache(
+  async (
+    params: ListJobsParams = {},
+    options: Pick<ApiFetchOptions, "revalidate" | "signal" | "tags" | "timeoutMs"> = {},
+  ): Promise<FacetsResponse> => {
+    return apiFetch("/api/v1/jobs/facets", facetsResponseSchema, {
+      query: toQuery(withFreshnessDefault(params)),
+      revalidate: 120,
+      tags: ["jobs:facets"],
+      ...options,
+    });
+  },
+);
 
-/** Detail lookup by numeric id. Throws `ApiError` with status=404 if missing. */
-export async function getJob(
-  id: number,
-  options: Pick<ApiFetchOptions, "revalidate" | "signal" | "timeoutMs"> = {},
-): Promise<JobDetail> {
-  return apiFetch(`/api/v1/jobs/${encodeURIComponent(String(id))}`, jobDetailSchema, {
-    revalidate: 300,
-    ...options,
-  });
-}
-
-/** Detail lookup by scraper-stable record_id. */
-export async function getJobByRecordId(
-  recordId: string,
-  options: Pick<ApiFetchOptions, "revalidate" | "signal"> = {},
-): Promise<JobDetail> {
-  return apiFetch(
-    `/api/v1/jobs/record/${encodeURIComponent(recordId)}`,
-    jobDetailSchema,
-    {
+/** Detail lookup by numeric id. Throws `ApiError` with status=404 if missing.
+ * Per-request memoized via React.cache() — repeated calls with the same id within
+ * one request hit a cached promise.
+ */
+export const getJob = cache(
+  async (
+    id: number,
+    options: Pick<ApiFetchOptions, "revalidate" | "signal" | "timeoutMs"> = {},
+  ): Promise<JobDetail> => {
+    return apiFetch(`/api/v1/jobs/${encodeURIComponent(String(id))}`, jobDetailSchema, {
       revalidate: 300,
       ...options,
-    },
-  );
-}
+    });
+  },
+);
+
+/** Detail lookup by scraper-stable record_id.
+ * Per-request memoized via React.cache() — repeated calls with the same recordId within
+ * one request hit a cached promise.
+ */
+export const getJobByRecordId = cache(
+  async (
+    recordId: string,
+    options: Pick<ApiFetchOptions, "revalidate" | "signal"> = {},
+  ): Promise<JobDetail> => {
+    return apiFetch(
+      `/api/v1/jobs/record/${encodeURIComponent(recordId)}`,
+      jobDetailSchema,
+      {
+        revalidate: 300,
+        ...options,
+      },
+    );
+  },
+);
 
 /** Autocomplete suggestions for the search box. */
 export async function suggestJobs(
@@ -130,13 +162,18 @@ export async function suggestJobs(
   });
 }
 
-/** Aggregate stats (total jobs, breakdowns, salary stats). */
-export async function getStats(
-  options: Pick<ApiFetchOptions, "revalidate" | "signal"> = {},
-): Promise<StatsResponse> {
-  return apiFetch("/api/v1/jobs/stats", statsResponseSchema, {
-    revalidate: 300,
-    tags: ["jobs:stats"],
-    ...options,
-  });
-}
+/** Aggregate stats (total jobs, breakdowns, salary stats).
+ * Per-request memoized via React.cache() — repeated calls within one request
+ * hit a cached promise.
+ */
+export const getStats = cache(
+  async (
+    options: Pick<ApiFetchOptions, "revalidate" | "signal"> = {},
+  ): Promise<StatsResponse> => {
+    return apiFetch("/api/v1/jobs/stats", statsResponseSchema, {
+      revalidate: 300,
+      tags: ["jobs:stats"],
+      ...options,
+    });
+  },
+);
