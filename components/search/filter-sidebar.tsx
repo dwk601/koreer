@@ -196,7 +196,7 @@ export function FilterSidebar({
               <li key={bucket}>
                 <label
                   className={cn(
-                    "group flex cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 type-caption transition-colors",
+                    "group flex min-h-touch cursor-pointer items-center justify-between gap-2 rounded-md px-2 py-1.5 type-caption transition-colors",
                     isActive
                       ? "bg-surface-muted text-ink"
                       : "text-ink-soft hover:bg-surface-muted/60 hover:text-ink",

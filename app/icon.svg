@@ -1,13 +1,10 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <style>
-    path {
-      fill: #1a2a28;
-    }
-    @media (prefers-color-scheme: dark) {
-      path {
-        fill: #f0ecdf;
-      }
-    }
-  </style>
-  <path d="M88 64h104v176l168-176h104L272 240l192 208h-104L192 240v208H88V64z"/>
+  <defs>
+    <linearGradient id="paper" x1="84" y1="64" x2="440" y2="448" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fffdf7"/>
+      <stop offset="1" stop-color="#ebe4d4"/>
+    </linearGradient>
+  </defs>
+  <rect x="32" y="32" width="448" height="448" rx="116" fill="#17322d"/>
+  <path d="M139 112h78v126l118-126h97L276 260l161 140H331L217 307v93h-78V112z" fill="url(#paper)"/>
 </svg>

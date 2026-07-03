@@ -110,7 +110,7 @@ test.describe("UI — missing post_date fallback", () => {
     await page.goto("/ko/jobs");
     await page.waitForLoadState("networkidle");
 
-    const jobCard = page.locator("article").first();
+    const jobCard = page.locator("article").filter({ has: page.getByRole("heading", { name: "공고" }) }).first();
     const fallbackSpan = jobCard.locator("span.italic");
     await expect(fallbackSpan).toContainText("등록일 미기재");
   });

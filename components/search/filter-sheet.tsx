@@ -180,15 +180,17 @@ export function FilterSheet({
 
           {/* Body — scrollable filter content */}
           <div className="flex-1 overflow-y-auto overscroll-contain px-4 py-4">
-            <FilterSidebar
-              key={sidebarKey}
-              params={draftParams}
-              facets={facets}
-              allSources={allSources}
-              mode="batch"
-              initialParams={draftParams}
-              onChange={setDraftParams}
-            />
+            {isOpen && (
+              <FilterSidebar
+                key={sidebarKey}
+                params={draftParams}
+                facets={facets}
+                allSources={allSources}
+                mode="batch"
+                initialParams={draftParams}
+                onChange={setDraftParams}
+              />
+            )}
           </div>
 
           {/* Footer — sticky, with safe-area padding for the home indicator */}

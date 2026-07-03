@@ -21,11 +21,6 @@ import type { ListResponse, Facets } from "@/lib/api/schemas";
 
 export const dynamic = "force-dynamic";
 
-// Performance: SidebarFetcher and Results both call listJobs(parsed) with identical
-// params. Next.js 16's fetch cache deduplicates these into a single upstream request.
-// The sidebar reads .facets from the list response instead of making a separate
-// /api/v1/jobs/facets call. This saves one round-trip per page render.
-
 type Props = {
   params: Promise<{ locale: string }>;
   searchParams: Promise<RawSearchParams>;
@@ -55,62 +50,47 @@ export default async function JobsPage({ params, searchParams }: Props) {
   const t = await getTranslations("jobs");
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6">
-      <header className="flex flex-col gap-5 border-b border-border pb-8">
-        <h1 className="type-title">
-          {t("pageTitle")}
-        </h1>
+    <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:py-12">
+      <header className="grid gap-6 border-b border-border pb-8 lg:grid-cols-[0.78fr_1fr] lg:items-end">
+        <div>
+          <p className="type-label text-ink-mute">{t("freshnessPromise")}</p>
+          <h1 className="mt-3 type-headline">{t("pageTitle")}</h1>
+        </div>
         <SearchBar initialQuery={parsed.q ?? ""} variant="compact" />
       </header>
 
-      <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[260px_minmax(0,1fr)] lg:gap-10">
-        {/* Sidebar: fetch facets in parallel with list */}
-        <Suspense
-          key={"facets-" + JSON.stringify(parsed)}
-          fallback={<SidebarSkeleton />}
-        >
+      <div className="mt-6 grid grid-cols-1 gap-8 lg:grid-cols-[18rem_minmax(0,1fr)] lg:gap-10">
+        <Suspense key={"facets-" + JSON.stringify(parsed)} fallback={<SidebarSkeleton />}>
           <SidebarFetcher parsed={parsed} />
         </Suspense>
 
-        <div>
-          <div className="flex flex-col gap-3 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between">
-            <div className="flex items-center gap-2 lg:order-2 shrink-0">
+        <main>
+          <div className="flex flex-col gap-4 lg:flex-row lg:flex-wrap lg:items-center lg:justify-between">
+            <div className="min-w-0 flex-1">
+              <ActiveFilterChips params={parsed} />
+            </div>
+            <div className="flex items-center justify-between gap-2 lg:justify-end">
               <Suspense fallback={null}>
                 <MobileFilterTrigger parsed={parsed} />
               </Suspense>
               <SortSelect params={parsed} />
             </div>
-            <div className="min-w-0 flex-1 lg:order-1">
-              <ActiveFilterChips params={parsed} />
-            </div>
           </div>
 
-          <Suspense
-            key={"results-" + JSON.stringify(parsed)}
-            fallback={<ResultsSkeleton />}
-          >
+          <Suspense key={"results-" + JSON.stringify(parsed)} fallback={<ResultsSkeleton />}>
             <Results parsed={parsed} locale={locale} />
           </Suspense>
-        </div>
+        </main>
       </div>
     </div>
   );
 }
 
-async function SidebarFetcher({
-  parsed,
-}: {
-  parsed: ReturnType<typeof parseListParams>;
-}) {
+async function SidebarFetcher({ parsed }: { parsed: ReturnType<typeof parseListParams> }) {
   let facets: Facets;
   let allSources: Record<string, number> | undefined;
   try {
-    // listJobs is deduped with the Results boundary's identical call via Next's
-    // fetch cache — no separate /api/v1/jobs/facets round-trip needed.
-    const [listRes, statsRes] = await Promise.all([
-      listJobs(parsed),
-      getStats(),
-    ]);
+    const [listRes, statsRes] = await Promise.all([listJobs(parsed), getStats()]);
     facets = listRes.facets;
     allSources = statsRes.by_source;
   } catch {
@@ -123,25 +103,20 @@ async function SidebarFetcher({
     };
   }
   return (
-    <div className="hidden lg:block lg:sticky lg:top-24 lg:max-h-[calc(100dvh-6rem)] lg:overflow-y-auto lg:pr-2">
-      <FilterSidebar params={parsed} facets={facets} allSources={allSources} />
+    <div className="hidden lg:block lg:sticky lg:top-28 lg:max-h-[calc(100dvh-7rem)] lg:overflow-y-auto lg:pr-1">
+      <div className="rounded-2xl border border-border bg-surface/55 p-3">
+        <FilterSidebar params={parsed} facets={facets} allSources={allSources} />
+      </div>
     </div>
   );
 }
 
-async function MobileFilterTrigger({
-  parsed,
-}: {
-  parsed: ReturnType<typeof parseListParams>;
-}) {
+async function MobileFilterTrigger({ parsed }: { parsed: ReturnType<typeof parseListParams> }) {
   let facets: Facets;
   let allSources: Record<string, number> | undefined;
   let resultCount = 0;
   try {
-    const [listRes, statsRes] = await Promise.all([
-      listJobs(parsed),
-      getStats(),
-    ]);
+    const [listRes, statsRes] = await Promise.all([listJobs(parsed), getStats()]);
     facets = listRes.facets;
     allSources = statsRes.by_source;
     resultCount = listRes.total_estimated;
@@ -181,10 +156,7 @@ async function Results({
   } catch {
     return (
       <div className="mt-8">
-        <EmptyState
-          title={t("noResultsTitle")}
-          description={t("noResultsSub")}
-        />
+        <EmptyState title={t("noResultsTitle")} description={t("noResultsSub")} />
       </div>
     );
   }
@@ -197,7 +169,7 @@ async function Results({
   if (list.items.length === 0) {
     return (
       <div className="mt-8">
-        <p className="text-sm text-ink-mute">{resultsPhrase}</p>
+        <p className="type-caption text-ink-mute">{resultsPhrase}</p>
         <EmptyState
           className="mt-6"
           title={t("noResultsTitle")}
@@ -220,10 +192,10 @@ async function Results({
   const baseQs = toQueryString({ ...parsed, cursor: undefined });
 
   return (
-    <section className="mt-4">
-      <p className="text-sm text-ink-mute">{resultsPhrase}</p>
+    <section className="mt-6">
+      <p className="type-caption text-ink-mute">{resultsPhrase}</p>
 
-      <ul className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-2">
+      <ul className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
         {list.items.map((job) => (
           <li key={job.id}>
             <JobCard job={job} />
@@ -244,20 +216,17 @@ async function Results({
 async function SidebarSkeleton() {
   const t = await getTranslations("app");
   return (
-    <div
-      aria-busy="true"
-      aria-live="polite"
-      className="motion-safe:animate-pulse motion-reduce:opacity-70 space-y-4"
-    >
+    <div aria-busy="true" aria-live="polite" className="motion-safe:animate-pulse motion-reduce:opacity-70">
       <span className="sr-only">{t("loading")}</span>
-      {Array.from({ length: 5 }).map((_, i) => (
-        <div key={i} className="space-y-2 border-b border-border py-3">
-          <div className="h-3 w-24 rounded bg-surface-muted" />
-          <div className="h-3 w-full rounded bg-surface-muted/60" />
-          <div className="h-3 w-3/4 rounded bg-surface-muted/60" />
-          <div className="h-3 w-1/2 rounded bg-surface-muted/60" />
-        </div>
-      ))}
+      <div className="hidden rounded-2xl border border-border bg-surface/55 p-4 lg:block">
+        {Array.from({ length: 5 }).map((_, i) => (
+          <div key={i} className="space-y-2 border-b border-border py-4 last:border-b-0">
+            <div className="h-3 w-24 rounded bg-surface-muted" />
+            <div className="h-3 w-full rounded bg-surface-muted/70" />
+            <div className="h-3 w-3/4 rounded bg-surface-muted/70" />
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
@@ -265,19 +234,12 @@ async function SidebarSkeleton() {
 async function ResultsSkeleton() {
   const t = await getTranslations("app");
   return (
-    <div
-      aria-busy="true"
-      aria-live="polite"
-      className="mt-4 motion-safe:animate-pulse motion-reduce:opacity-70"
-    >
+    <div aria-busy="true" aria-live="polite" className="mt-6 motion-safe:animate-pulse motion-reduce:opacity-70">
       <span className="sr-only">{t("loading")}</span>
       <div className="h-4 w-56 rounded bg-surface-muted" />
       <ul className="mt-5 grid grid-cols-1 gap-4 md:grid-cols-2">
         {Array.from({ length: 6 }).map((_, i) => (
-          <li
-            key={i}
-            className="h-[152px] rounded-xl border border-border bg-surface"
-          />
+          <li key={i} className="h-[172px] rounded-2xl border border-border bg-surface" />
         ))}
       </ul>
     </div>

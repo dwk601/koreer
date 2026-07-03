@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import Image from "next/image";
 
 import { Link, usePathname } from "@/lib/i18n/navigation";
 import { cn } from "@/lib/cn";
@@ -20,16 +21,20 @@ export function HeaderNav() {
   const pathname = usePathname();
 
   return (
-    <header className="sticky top-0 z-30 border-b border-border bg-bg/85 backdrop-blur">
-      <div className="mx-auto flex h-16 max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
+    <header className="sticky top-0 z-30 border-b border-border bg-bg/88 backdrop-blur supports-[backdrop-filter]:bg-bg/78">
+      <div className="mx-auto flex h-[4.5rem] max-w-6xl items-center justify-between gap-4 px-4 sm:px-6">
         <Link
           href="/"
-          className="group flex items-baseline gap-2 font-semibold tracking-tight"
+          className="group flex items-center gap-3 rounded-full pr-3 font-semibold tracking-tight transition-colors hover:bg-surface-muted/60"
           aria-label={t("app.name")}
         >
-          <span
-            aria-hidden
-            className="inline-block size-2 rounded-full bg-accent transition-transform group-hover:scale-110"
+          <Image
+            src="/logo.svg"
+            alt=""
+            aria-hidden="true"
+            width={36}
+            height={36}
+            className="size-9 rounded-[0.85rem] transition-transform group-hover:scale-[1.03]"
           />
           <span className="text-[17px] leading-none">{t("app.name")}</span>
         </Link>
@@ -43,25 +48,19 @@ export function HeaderNav() {
                   <Link
                     href={href}
                     className={cn(
-                      "relative inline-flex h-10 min-h-touch items-center rounded-md px-3 transition-colors",
+                      "relative inline-flex h-10 min-h-touch items-center rounded-full px-3.5 font-medium transition-colors",
                       active
-                        ? "text-ink"
-                        : "text-ink-mute hover:text-ink hover:bg-surface-muted",
+                        ? "bg-surface text-ink shadow-[inset_0_0_0_1px_var(--color-border)]"
+                        : "text-ink-mute hover:bg-surface-muted/70 hover:text-ink",
                     )}
                     aria-current={active ? "page" : undefined}
                   >
                     {t(`nav.${key}`)}
-                    {active && (
-                      <span
-                        aria-hidden
-                        className="absolute inset-x-3 -bottom-px h-px bg-ink"
-                      />
-                    )}
                   </Link>
                 </li>
               );
             })}
-            <li className="ml-2">
+            <li className="ml-1">
               <LocaleSwitcher />
             </li>
           </ul>

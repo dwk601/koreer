@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
+  <title id="title">Koreer logo</title>
+  <desc id="desc">A folded editorial K mark inside a rounded square.</desc>
+  <defs>
+    <linearGradient id="paper" x1="24" y1="18" x2="138" y2="146" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fffdf7"/>
+      <stop offset="1" stop-color="#ebe4d4"/>
+    </linearGradient>
+  </defs>
+  <rect x="10" y="10" width="140" height="140" rx="38" fill="#17322d"/>
+  <path d="M44 36h25v39l37-39h31L88 82l51 42h-34L69 94v30H44V36z" fill="url(#paper)"/>
+  <path d="M71 77l35-41h31L88 82l51 42h-34L71 95V77z" fill="#f6f0df" fill-opacity="0.18"/>
+</svg>

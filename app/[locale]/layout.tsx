@@ -10,15 +10,15 @@ import { Footer } from "@/components/layout/footer";
 import { routing } from "@/lib/i18n/routing";
 import { cn } from "@/lib/cn";
 
-// Latin typeface — used for English content and numeric UI.
+// Latin typeface - used for English content and numeric UI.
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
   display: "swap",
 });
 
-// Korean-first typeface — Pretendard Variable covers the full weight range
-// (45–920) in a single woff2 file (~2 MB uncompressed, served with swap).
+// Korean-first typeface - Pretendard Variable covers the full weight range
+// (45-920) in a single woff2 file (~2 MB uncompressed, served with swap).
 const pretendard = localFont({
   src: "../fonts/PretendardVariable.woff2",
   variable: "--font-pretendard",
@@ -45,7 +45,7 @@ export async function generateMetadata({
     metadataBase: new URL(siteUrl),
     title: {
       default: t("name"),
-      template: `%s — ${t("name")}`,
+      template: `%s - ${t("name")}`,
     },
     description: t("description"),
     alternates: {

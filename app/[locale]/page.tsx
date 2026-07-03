@@ -5,11 +5,8 @@ import { JobCard } from "@/components/jobs/job-card";
 import { SearchBar } from "@/components/search/search-bar";
 import { listJobs, getStats } from "@/lib/api/jobs";
 import type { ListResponse, StatsResponse } from "@/lib/api/schemas";
-import { SOURCE_LABEL } from "@/lib/sources";
+import { SOURCE_LABEL, formatSourceLabel } from "@/lib/sources";
 
-// The home page surfaces the freshest jobs + live stats. Render on-demand
-// (with the API client's 60s revalidation) so we never serve stale results
-// after a build, and so build does not depend on upstream availability.
 export const dynamic = "force-dynamic";
 
 const emptyList: ListResponse = {
@@ -46,12 +43,6 @@ async function safeGetStats() {
   }
 }
 
-/**
- * Home page — editorial hero, search, recent jobs, live stats.
- *
- * Pure Server Component. Parallel-fetches `listJobs` + `getStats` so the
- * page renders in a single round-trip to the API.
- */
 export default async function HomePage({
   params,
 }: {
@@ -61,77 +52,94 @@ export default async function HomePage({
   setRequestLocale(locale);
 
   const t = await getTranslations();
-
-  // Parallel fetches — independent requests should never await sequentially.
   const [list, stats] = await Promise.all([safeListJobs(), safeGetStats()]);
 
   const totalFmt = new Intl.NumberFormat(locale).format(stats.total_jobs);
-  const sourceCount = Object.keys(stats.by_source).length || Object.keys(SOURCE_LABEL).length;
+  const sourceEntries = Object.entries(stats.by_source).length
+    ? Object.entries(stats.by_source)
+    : Object.keys(SOURCE_LABEL).map((key) => [key, 0] as [string, number]);
+  const sourceCount = sourceEntries.length || Object.keys(SOURCE_LABEL).length;
+  const topSources = sourceEntries
+    .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
+    .slice(0, 5);
 
   return (
-    <div className="relative">
-      {/* ---------- HERO ---------- */}
-      <section className="relative overflow-hidden">
-        <HeroBackdrop />
-        <div className="relative mx-auto w-full max-w-6xl px-4 pt-16 pb-20 sm:px-6 sm:pt-24 sm:pb-28 lg:pt-28">
-          <p className="type-label text-ink-mute">
-            {t("home.heroEyebrow")}
-          </p>
+    <div className="relative overflow-hidden">
+      <HeroBackdrop />
+
+      <section className="relative mx-auto grid min-h-[calc(100dvh-4.5rem)] w-full max-w-6xl grid-cols-1 items-center gap-10 px-4 pb-16 pt-10 sm:px-6 lg:grid-cols-[minmax(0,1.05fr)_minmax(280px,0.72fr)] lg:gap-12 lg:pt-12">
+        <div>
+          <p className="type-label text-ink-mute">{t("home.heroEyebrow")}</p>
           <h1 className="mt-5 max-w-4xl type-display">
             {t("home.heroTitle")}
-            <span className="block mt-2 type-headline text-ink-mute">
-              {t("home.heroTitleAccent")}
-            </span>
+            <span className="block text-ink-mute">{t("home.heroTitleAccent")}</span>
           </h1>
-          <p className="mt-6 max-w-xl type-body text-ink-soft">
+          <p className="mt-7 max-w-xl type-body text-ink-soft">
             {t("home.heroSub")}
           </p>
 
-          <div className="mt-10 max-w-2xl">
+          <div className="mt-9 max-w-2xl">
             <SearchBar />
           </div>
-
-          {/* Stats sentence */}
-          <p className="mt-14 border-t border-border pt-8 max-w-2xl type-body text-ink-soft">
-            {t("home.statsLine", { total: totalFmt, sources: sourceCount })}
-          </p>
         </div>
+
+        <aside className="paper-panel rounded-[2rem] p-3 lg:translate-y-10">
+          <div className="rounded-[1.55rem] border border-border bg-bg/70 p-5 sm:p-6">
+            <p className="type-label text-ink-mute">{t("home.statsEyebrow")}</p>
+            <div className="mt-5 border-b border-border pb-5">
+              <p className="text-[clamp(3rem,7vw,5rem)] font-semibold leading-none tracking-[-0.06em] tabular-nums">
+                {totalFmt}
+              </p>
+              <p className="mt-2 type-caption text-ink-mute">
+                {t("home.statsLine", { total: totalFmt, sources: sourceCount })}
+              </p>
+            </div>
+            <ul className="mt-5 space-y-2.5">
+              {topSources.map(([source, count]) => (
+                <li key={source} className="grid grid-cols-[1fr_auto] gap-3 text-sm">
+                  <span className="truncate text-ink-soft">{formatSourceLabel(source)}</span>
+                  <span className="tabular-nums text-ink-mute">
+                    {new Intl.NumberFormat(locale).format(count)}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </aside>
       </section>
 
-      {/* ---------- RECENT JOBS ---------- */}
-      <section className="mx-auto w-full max-w-6xl px-4 sm:px-6 pt-4 pb-20">
-        <div className="flex items-end justify-between gap-4">
+      <section className="mx-auto w-full max-w-6xl px-4 pb-20 sm:px-6">
+        <div className="grid gap-5 border-t border-border pt-10 md:grid-cols-[0.7fr_1fr] md:items-end">
           <div>
-            <p className="type-label text-ink-mute">
-              {t("home.freshEyebrow")}
-            </p>
-            <h2 className="mt-2 type-title">
-              {t("home.freshTitle")}
-            </h2>
+            <p className="type-label text-ink-mute">{t("home.freshEyebrow")}</p>
+            <h2 className="mt-3 type-title">{t("home.freshTitle")}</h2>
           </div>
-          <Link
-            href="/jobs"
-            className="group inline-flex items-center gap-1.5 rounded-full border border-border bg-surface px-4 h-10 min-h-touch font-medium text-ink-soft transition-colors hover:border-border-strong hover:text-ink"
-          >
-            {t("home.freshCta")}
-            <svg
-              aria-hidden
-              viewBox="0 0 12 12"
-              className="size-3 transition-transform group-hover:translate-x-0.5"
+          <div className="flex items-end justify-between gap-4 md:justify-end">
+            <p className="hidden max-w-sm text-sm leading-6 text-ink-mute md:block">
+              {t("home.freshSub")}
+            </p>
+            <Link
+              href="/jobs"
+              className="group inline-flex h-11 min-h-touch-primary items-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-accent-ink transition-opacity hover:opacity-90"
             >
-              <path
-                d="M3 2 L9 6 L3 10"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth="1.5"
-                strokeLinecap="round"
-                strokeLinejoin="round"
-              />
-            </svg>
-          </Link>
+              {t("home.freshCta")}
+              <span className="grid size-7 place-items-center rounded-full bg-accent-ink/12 transition-transform group-hover:translate-x-0.5">
+                <svg aria-hidden viewBox="0 0 12 12" className="size-3">
+                  <path
+                    d="M3 2 L9 6 L3 10"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth="1.5"
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                  />
+                </svg>
+              </span>
+            </Link>
+          </div>
         </div>
 
-        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-7 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {list.items.map((job) => (
             <JobCard key={job.id} job={job} />
           ))}
@@ -141,11 +149,6 @@ export default async function HomePage({
   );
 }
 
-/**
- * Subtle, non-generic hero backdrop. A quiet warm wash at top-right with
- * a hairline fade to the muted surface so the stats strip sits on a
- * different plane from the hero. Pure CSS, dark-mode safe via color-mix.
- */
 function HeroBackdrop() {
   return (
     <div
@@ -153,7 +156,7 @@ function HeroBackdrop() {
       className="pointer-events-none absolute inset-0 -z-10"
       style={{
         backgroundImage:
-          "radial-gradient(900px 340px at 92% -8%, color-mix(in oklab, var(--color-chip-ko-bg) 65%, transparent), transparent 65%), linear-gradient(180deg, transparent 70%, color-mix(in oklab, var(--color-surface-muted) 45%, transparent) 100%)",
+          "radial-gradient(900px 380px at 88% 4%, color-mix(in oklab, var(--color-chip-ko-bg) 58%, transparent), transparent 68%), radial-gradient(760px 360px at 12% 28%, color-mix(in oklab, var(--color-surface) 72%, transparent), transparent 72%), linear-gradient(180deg, transparent 72%, color-mix(in oklab, var(--color-surface-muted) 42%, transparent) 100%)",
       }}
     />
   );

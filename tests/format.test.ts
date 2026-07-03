@@ -23,7 +23,7 @@ describe("formatSalary", () => {
     ).toBeNull();
   });
 
-  it("renders a yearly range as $80K–$120K/yr", () => {
+  it("renders a yearly range as $80K-$120K/yr", () => {
     expect(
       formatSalary({
         salary_min: 80000,
@@ -31,7 +31,7 @@ describe("formatSalary", () => {
         salary_unit: "yearly",
         salary_currency: "USD",
       }),
-    ).toBe("$80K–$120K/yr");
+    ).toBe("$80K-$120K/yr");
   });
 
   it("renders an hourly single value with two digits and /hr", () => {

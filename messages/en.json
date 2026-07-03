@@ -20,11 +20,12 @@
     "heroTitle": "Korean-American jobs",
     "heroTitleAccent": "open right now",
     "heroSub": "Only listings posted in the last 60 days. Search by title, company, or city in seconds.",
-    "searchPlaceholder": "Title, company, or city",
+    "searchPlaceholder": "Search title, company, or city",
     "searchSubmit": "Search",
     "freshEyebrow": "Recently posted",
     "freshTitle": "Just added",
-    "freshCta": "View all",
+    "freshSub": "Scan a few current leads first, then filter by source, language, location, and salary when you need precision.",
+    "freshCta": "Browse all",
     "statsEyebrow": "Live stats",
     "statsTotal": "Total jobs",
     "statsCategory": "Top categories",
@@ -34,6 +35,7 @@
   "jobs": {
     "pageTitle": "Jobs",
     "pageSub": "Posted within the last 60 days · {count} results",
+    "freshnessPromise": "Newest 60 days",
     "noResultsTitle": "No jobs match your filters",
     "noResultsSub": "Try clearing a filter or broadening your search.",
     "clearFilters": "Clear filters",
@@ -46,7 +48,7 @@
       "newest": "Newest",
       "salary_high": "Salary (high)",
       "salary_low": "Salary (low)",
-      "company_az": "Company A–Z"
+      "company_az": "Company A-Z"
     },
     "filter": {
       "title": "Filters",
@@ -69,8 +71,8 @@
     "salaryLabel": {
       "free": "Not listed",
       "under_40k": "Under $40K",
-      "40k_80k": "$40K–$80K",
-      "80k_120k": "$80K–$120K",
+      "40k_80k": "$40K-$80K",
+      "80k_120k": "$80K-$120K",
       "over_120k": "Over $120K"
     },
     "pagination": {
@@ -100,7 +102,7 @@
     "category": "Category",
     "applyExternal": "Apply",
     "applyNote": "You will leave Koreer",
-    "backToList": "Back to jobs",
+    "backToList": "Back to list",
     "notFoundTitle": "Job not found",
     "notFoundSub": "This posting may have been removed or expired.",
     "relatedEyebrow": "More from {source}",

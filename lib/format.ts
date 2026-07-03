@@ -6,7 +6,7 @@ import { daysSincePosted } from "@/lib/date";
  * so the caller can fall back to a localized "not listed" string.
  *
  *   formatSalary({salary_min: 80000, salary_max: 120000, salary_unit: 'yearly', salary_currency: 'USD'})
- *     -> "$80K–$120K/yr"
+ *     -> "$80K-$120K/yr"
  */
 export function formatSalary(
   job: Pick<
@@ -40,7 +40,7 @@ export function formatSalary(
   };
 
   if (salary_min != null && salary_max != null && salary_min !== salary_max) {
-    return `${symbol}${fmt(salary_min)}–${symbol}${fmt(salary_max)}${unitSuffix}`;
+    return `${symbol}${fmt(salary_min)}-${symbol}${fmt(salary_max)}${unitSuffix}`;
   }
   const single = salary_min ?? salary_max!;
   return `${symbol}${fmt(single)}${unitSuffix}`;

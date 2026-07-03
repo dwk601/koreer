@@ -24,6 +24,7 @@
     "searchSubmit": "검색",
     "freshEyebrow": "최근 등록된 공고",
     "freshTitle": "방금 올라온 일자리",
+    "freshSub": "먼저 최신 공고 몇 개를 훑어보고, 필요할 때 출처와 언어, 지역, 급여로 좁혀보세요.",
     "freshCta": "전체 보기",
     "statsEyebrow": "실시간 통계",
     "statsTotal": "총 공고",
@@ -34,6 +35,7 @@
   "jobs": {
     "pageTitle": "채용정보",
     "pageSub": "최근 60일 이내 공고 · {count}건",
+    "freshnessPromise": "최근 60일 공고",
     "noResultsTitle": "조건에 맞는 공고가 없어요",
     "noResultsSub": "필터를 줄여서 다시 검색해 보세요.",
     "clearFilters": "필터 초기화",

@@ -15,34 +15,35 @@
 export const tokens = {
   colors: {
     // Core surfaces — warm, tinted neutrals
-    bg: "#faf9f5",
-    surface: "#ffffff",
-    surfaceMuted: "#f1efe8",
-    border: "rgba(22, 21, 18, 0.08)",
-    borderStrong: "rgba(22, 21, 18, 0.16)",
+    bg: "#f7f3e9",
+    surface: "#fffdf7",
+    surfaceMuted: "#ebe4d4",
+
+    border: "rgba(33, 30, 22, 0.1)",
+    borderStrong: "rgba(33, 30, 22, 0.2)",
 
     // Text
-    ink: "#16140f",
-    inkSoft: "#3a3833",
-    inkMute: "#6f6c64",
+    ink: "#18150f",
+    inkSoft: "#39342a",
+    inkMute: "#756f61",
 
     // Accent — deep evergreen
-    accent: "#1a2a28",
-    accentInk: "#f6f5ef",
+    accent: "#17322d",
+    accentInk: "#f6f0df",
 
     // Language chips
-    chipKoBg: "#efe8d4",
-    chipKoInk: "#564613",
-    chipEnBg: "#dfe9e9",
-    chipEnInk: "#17353a",
-    chipBiBg: "#e9e8f3",
-    chipBiInk: "#38347b",
+    chipKoBg: "#eadfbe",
+    chipKoInk: "#5b4711",
+    chipEnBg: "#d8e7e2",
+    chipEnInk: "#183b34",
+    chipBiBg: "#e4dfed",
+    chipBiInk: "#403276",
 
     // Focus + motion
-    focus: "#a38b2d",
+    focus: "#9d8126",
 
     // Shadow tint — warm ink for depth (no pure black)
-    shadowTint: "22 20 15",
+    shadowTint: "33 30 22",
   },
 } as const;
 
@@ -52,6 +53,7 @@ export const {
     bg,
     surface,
     surfaceMuted,
+
     border,
     borderStrong,
     ink,

@@ -106,8 +106,8 @@ test.describe("UI — JobCard overlay click", () => {
     const clickY = cardBox.y + cardBox.height - 10;
 
     await page.mouse.click(clickX, clickY);
-    await page.waitForURL(/\/en\/jobs\/456/);
+    await page.waitForURL(/\/en\/jobs\/123/);
 
-    expect(page.url()).toContain("/en/jobs/456");
+    expect(page.url()).toContain("/en/jobs/123");
   });
 });

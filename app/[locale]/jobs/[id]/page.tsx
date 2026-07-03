@@ -12,14 +12,13 @@ import { formatPostedRelative, formatSalary } from "@/lib/format";
 import { formatSourceLabel } from "@/lib/sources";
 import { daysSincePosted } from "@/lib/date";
 
-// Detail pages cache aggressively via the API client; no need to opt out.
 type PageParams = { locale: string; id: string };
 type Props = { params: Promise<PageParams> };
 
 const LANGUAGE_LABEL: Record<string, string> = {
   korean: "KO",
   english: "EN",
-  bilingual: "KO · EN",
+  bilingual: "KO + EN",
 };
 
 async function loadJob(idStr: string): Promise<JobDetail | null> {
@@ -28,8 +27,7 @@ async function loadJob(idStr: string): Promise<JobDetail | null> {
   try {
     return await getJob(id);
   } catch (e) {
-    if (e instanceof ApiError && (e.status === 404 || e.code === "TIMEOUT"))
-      return null;
+    if (e instanceof ApiError && (e.status === 404 || e.code === "TIMEOUT")) return null;
     throw e;
   }
 }
@@ -41,10 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const t = await getTranslations({ locale, namespace: "error" });
     return { title: t("notFoundJobTitle") };
   }
-  const description = (job.description ?? "")
-    .replace(/\s+/g, " ")
-    .slice(0, 160)
-    .trim();
+  const description = (job.description ?? "").replace(/\s+/g, " ").slice(0, 160).trim();
   return {
     title: job.title,
     description: description || undefined,
@@ -84,17 +79,13 @@ export default async function JobDetailPage({ params }: Props) {
     salary_currency: job.salary.currency,
   });
   const locationDisplay =
-    [job.location.city, job.location.state].filter(Boolean).join(", ") ||
-    job.location.raw ||
-    "";
+    [job.location.city, job.location.state].filter(Boolean).join(", ") || job.location.raw || "";
   const postedRelative = formatPostedRelative(job.post_date, lang);
   const postedAbsolute = job.post_date
     ? new Intl.DateTimeFormat(lang, {
         year: "numeric",
         month: "short",
         day: "numeric",
-        // post_date is a date-only string at UTC midnight; pin the formatter to
-        // UTC so users west of UTC don't see the previous day.
         timeZone: "UTC",
       }).format(new Date(job.post_date + "T00:00:00Z"))
     : "";
@@ -106,121 +97,103 @@ export default async function JobDetailPage({ params }: Props) {
   const description = job.description?.trim() ?? "";
 
   return (
-    <div className="mx-auto w-full max-w-4xl px-4 py-10 sm:px-6">
-      {/* Back link */}
-      <div className="text-sm">
-        <Link
-          href="/jobs"
-          className="inline-flex items-center gap-1 h-10 min-h-touch px-2 rounded-md text-ink-mute transition-colors hover:text-ink"
-        >
-          <svg aria-hidden viewBox="0 0 12 12" className="size-3">
-            <path
-              d="M9 2 L3 6 L9 10"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="1.5"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            />
-          </svg>
-          {tDetail("backToList")}
-        </Link>
-      </div>
-
-      {/* Header */}
-      <header className="mt-6 flex flex-col gap-4 border-b border-border pb-8">
-        <div className="flex flex-wrap items-center gap-2">
-          <LanguageChip language={job.language} label={languageLabel} />
-          <Badge tone="muted">{sourceLabel}</Badge>
-          {daysOld != null && daysOld <= 7 && (
-            <Badge tone="accent">
-              {daysOld === 0 ? t("jobs.card.postedToday") : postedRelative}
-            </Badge>
-          )}
-        </div>
-        <h1 className="type-headline text-balance">
-          {job.title}
-        </h1>
-        {job.company && (
-          <p className="type-body text-ink-soft">{job.company}</p>
-        )}
-
-        {/* Meta grid */}
-        <dl className="mt-2 grid grid-cols-1 gap-x-6 gap-y-3 text-sm sm:grid-cols-2">
-          <MetaRow label={tDetail("location")} value={locationDisplay || t("jobs.card.locationUnavailable")} />
-          <MetaRow
-            label={tDetail("salary")}
-            value={salary ?? t("jobs.card.salaryUnavailable")}
+    <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:py-12">
+      <Link
+        href="/jobs"
+        className="inline-flex h-10 min-h-touch items-center gap-2 rounded-full px-3 text-sm font-medium text-ink-mute transition-colors hover:bg-surface-muted/70 hover:text-ink"
+      >
+        <svg aria-hidden viewBox="0 0 12 12" className="size-3">
+          <path
+            d="M9 2 L3 6 L9 10"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           />
-          <MetaRow
-            label={tDetail("postedOn")}
-            value={
-              job.post_date
-                ? `${postedRelative} · ${postedAbsolute}`
-                : t("jobs.card.dateUnknown")
-            }
-          />
-          <MetaRow label={tDetail("source")} value={sourceLabel} />
-          {categories.length > 0 && (
-            <MetaRow
-              label={tDetail("category")}
-              value={categories
-                .map((c) => c.replace(/_/g, " "))
-                .map((c) => c.charAt(0).toUpperCase() + c.slice(1))
-                .join(", ")}
-              wide
-            />
-          )}
-        </dl>
+        </svg>
+        {tDetail("backToList")}
+      </Link>
 
-        {job.link && (
-          <div className="mt-2">
-            <a
-              href={job.link}
-              target="_blank"
-              rel="noopener noreferrer nofollow"
-              className="group inline-flex items-center gap-2 rounded-full bg-accent px-6 py-3 text-sm font-semibold text-accent-ink transition-opacity hover:opacity-90"
-            >
-              {tDetail("applyExternal")}
-              <svg
-                aria-hidden
-                viewBox="0 0 14 14"
-                className="size-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
-              >
-                <path
-                  d="M4 3 L11 3 L11 10"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-                <path
-                  d="M11 3 L3 11"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-            </a>
-            <p className="mt-2 text-xs text-ink-mute">{tDetail("applyNote")}</p>
+      <header className="mt-5 grid gap-6 border-b border-border pb-9 lg:grid-cols-[minmax(0,1fr)_20rem] lg:items-start">
+        <div>
+          <div className="flex flex-wrap items-center gap-2">
+            <LanguageChip language={job.language} label={languageLabel} />
+            <Badge tone="muted">{sourceLabel}</Badge>
+            {daysOld != null && daysOld <= 7 && (
+              <Badge tone="accent">
+                {daysOld === 0 ? t("jobs.card.postedToday") : postedRelative}
+              </Badge>
+            )}
           </div>
-        )}
+          <h1 className="mt-5 type-headline text-balance">{job.title}</h1>
+          {job.company && <p className="mt-4 type-body text-ink-soft">{job.company}</p>}
+        </div>
+
+        <aside className="rounded-2xl border border-border bg-surface p-4 lg:sticky lg:top-28">
+          <dl className="grid grid-cols-1 gap-4 text-sm">
+            <MetaRow label={tDetail("location")} value={locationDisplay || t("jobs.card.locationUnavailable")} />
+            <MetaRow label={tDetail("salary")} value={salary ?? t("jobs.card.salaryUnavailable")} />
+            <MetaRow
+              label={tDetail("postedOn")}
+              value={job.post_date ? `${postedRelative} · ${postedAbsolute}` : t("jobs.card.dateUnknown")}
+            />
+            <MetaRow label={tDetail("source")} value={sourceLabel} />
+            {categories.length > 0 && (
+              <MetaRow
+                label={tDetail("category")}
+                value={categories
+                  .map((c) => c.replace(/_/g, " "))
+                  .map((c) => c.charAt(0).toUpperCase() + c.slice(1))
+                  .join(", ")}
+              />
+            )}
+          </dl>
+
+          {job.link && (
+            <div className="mt-5 border-t border-border pt-4">
+              <a
+                href={job.link}
+                target="_blank"
+                rel="noopener noreferrer nofollow"
+                className="group inline-flex h-11 min-h-touch-primary w-full items-center justify-center gap-2 rounded-full bg-accent px-5 text-sm font-semibold text-accent-ink transition-opacity hover:opacity-90"
+              >
+                {tDetail("applyExternal")}
+                <span className="grid size-7 place-items-center rounded-full bg-accent-ink/12 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5">
+                  <svg aria-hidden viewBox="0 0 14 14" className="size-3.5">
+                    <path
+                      d="M4 3 L11 3 L11 10"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                    <path
+                      d="M11 3 L3 11"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="1.6"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </svg>
+                </span>
+              </a>
+              <p className="mt-2 text-xs text-ink-mute">{tDetail("applyNote")}</p>
+            </div>
+          )}
+        </aside>
       </header>
 
-      {/* Description */}
       {description && (
-        <section className="mt-8 max-w-2xl whitespace-pre-line type-body text-ink-soft">
+        <article className="prose mt-9 max-w-3xl whitespace-pre-line type-body text-ink-soft">
           {description}
-        </section>
+        </article>
       )}
 
-      {/* Related listings from the same source */}
       <RelatedFromSource currentId={job.id} source={job.source} />
 
-      {/* JSON-LD structured data for rich results */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(buildJobPostingJsonLd(job)) }}
@@ -229,13 +202,7 @@ export default async function JobDetailPage({ params }: Props) {
   );
 }
 
-async function RelatedFromSource({
-  currentId,
-  source,
-}: {
-  currentId: number;
-  source: string;
-}) {
+async function RelatedFromSource({ currentId, source }: { currentId: number; source: string }) {
   const t = await getTranslations("detail");
   const sourceLabel = formatSourceLabel(source);
 
@@ -250,11 +217,11 @@ async function RelatedFromSource({
   if (items.length < 2) return null;
 
   return (
-    <section className="mt-14 border-t border-border pt-10">
-      <p className="type-label text-ink-mute">
-        {t("relatedEyebrow", { source: sourceLabel })}
-      </p>
-      <h2 className="mt-2 type-title">{t("relatedTitle")}</h2>
+    <section className="mt-16 border-t border-border pt-10">
+      <p className="type-label text-ink-mute">{t("relatedEyebrow", { source: sourceLabel })}</p>
+      <div className="mt-3 flex items-end justify-between gap-4">
+        <h2 className="type-title">{t("relatedTitle")}</h2>
+      </div>
       <div className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {items.map((job) => (
           <JobCard key={job.id} job={job} />
@@ -264,29 +231,15 @@ async function RelatedFromSource({
   );
 }
 
-function MetaRow({
-  label,
-  value,
-  wide,
-}: {
-  label: string;
-  value: string;
-  wide?: boolean;
-}) {
+function MetaRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className={wide ? "sm:col-span-2" : undefined}>
-      <dt className="type-label text-ink-mute">
-        {label}
-      </dt>
-      <dd className="mt-0.5 text-ink">{value}</dd>
+    <div>
+      <dt className="type-label text-ink-mute">{label}</dt>
+      <dd className="mt-1 font-medium leading-6 text-ink">{value}</dd>
     </div>
   );
 }
 
-/**
- * Build schema.org JobPosting structured data.
- * See https://developers.google.com/search/docs/appearance/structured-data/job-posting
- */
 function buildJobPostingJsonLd(job: JobDetail) {
   const jsonLd: Record<string, unknown> = {
     "@context": "https://schema.org/",
@@ -316,10 +269,7 @@ function buildJobPostingJsonLd(job: JobDetail) {
     },
   };
 
-  if (
-    job.salary.min != null ||
-    job.salary.max != null
-  ) {
+  if (job.salary.min != null || job.salary.max != null) {
     const unitMap: Record<string, string> = {
       yearly: "YEAR",
       monthly: "MONTH",
@@ -345,6 +295,5 @@ function buildJobPostingJsonLd(job: JobDetail) {
     jsonLd.url = job.link;
   }
 
-  // Drop undefined keys for cleaner output.
   return JSON.parse(JSON.stringify(jsonLd));
 }
