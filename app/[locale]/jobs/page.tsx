@@ -50,9 +50,9 @@ export default async function JobsPage({ params, searchParams }: Props) {
   const t = await getTranslations("jobs");
 
   return (
-    <div className="mx-auto w-full max-w-6xl px-4 py-8 sm:px-6 lg:py-12">
-      <header className="grid gap-6 border-b border-border pb-8 lg:grid-cols-[0.78fr_1fr] lg:items-end">
-        <div>
+    <div className="mx-auto w-full max-w-6xl overflow-x-clip px-4 py-8 sm:px-6 lg:py-12">
+      <header className="grid min-w-0 gap-6 border-b border-border pb-8 lg:grid-cols-[0.78fr_1fr] lg:items-end">
+        <div className="min-w-0">
           <p className="type-label text-ink-mute">{t("freshnessPromise")}</p>
           <h1 className="mt-3 type-headline">{t("pageTitle")}</h1>
         </div>

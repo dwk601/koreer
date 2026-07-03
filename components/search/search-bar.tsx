@@ -151,13 +151,13 @@ export function SearchBar({
   return (
     <div
       ref={rootRef}
-      className={cn("relative w-full", className)}
+      className={cn("relative w-full min-w-0 max-w-full", className)}
     >
       <form
         role="search"
         onSubmit={onSubmit}
         className={cn(
-          "relative flex w-full items-center gap-2 rounded-full border border-border-strong bg-surface shadow-[0_1px_0_0_rgb(var(--shadow-tint)/0.04)] transition-shadow focus-within:shadow-[0_6px_24px_-12px_rgb(var(--shadow-tint)/0.25)]",
+          "relative flex w-full min-w-0 items-center gap-2 rounded-full border border-border-strong bg-surface shadow-[0_1px_0_0_rgb(var(--shadow-tint)/0.04)] transition-shadow focus-within:shadow-[0_6px_24px_-12px_rgb(var(--shadow-tint)/0.25)]",
           variant === "hero" ? "h-14 pl-5 pr-1.5" : "h-11 pl-4 pr-1",
         )}
       >

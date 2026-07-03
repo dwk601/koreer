@@ -1,13 +1,23 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" role="img" aria-labelledby="title desc">
   <title id="title">Koreer logo</title>
-  <desc id="desc">A folded editorial K mark inside a rounded square.</desc>
+  <desc id="desc">A warm editorial K mark with evergreen and soft gold accents.</desc>
   <defs>
-    <linearGradient id="paper" x1="24" y1="18" x2="138" y2="146" gradientUnits="userSpaceOnUse">
+    <linearGradient id="field" x1="20" y1="18" x2="144" y2="146" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#17463d"/>
+      <stop offset="0.58" stop-color="#123f37"/>
+      <stop offset="1" stop-color="#0f2f2a"/>
+    </linearGradient>
+    <linearGradient id="paper" x1="42" y1="30" x2="124" y2="126" gradientUnits="userSpaceOnUse">
       <stop stop-color="#fffdf7"/>
-      <stop offset="1" stop-color="#ebe4d4"/>
+      <stop offset="1" stop-color="#f1e4bf"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="42" y1="124" x2="134" y2="30" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d8bd6a"/>
+      <stop offset="1" stop-color="#f3df9b"/>
     </linearGradient>
   </defs>
-  <rect x="10" y="10" width="140" height="140" rx="38" fill="#17322d"/>
-  <path d="M44 36h25v39l37-39h31L88 82l51 42h-34L69 94v30H44V36z" fill="url(#paper)"/>
-  <path d="M71 77l35-41h31L88 82l51 42h-34L71 95V77z" fill="#f6f0df" fill-opacity="0.18"/>
+  <rect x="10" y="10" width="140" height="140" rx="38" fill="url(#field)"/>
+  <path d="M44 36h25v38l36-38h31L89 81l50 43h-34L69 94v30H44V36z" fill="url(#paper)"/>
+  <path d="M70 78 105 36h31L89 81l50 43h-34L70 94V78z" fill="url(#gold)" fill-opacity="0.28"/>
+  <path d="M44 124h25V94l-25 30z" fill="#fffdf7" fill-opacity="0.18"/>
 </svg>

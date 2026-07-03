@@ -27,9 +27,9 @@ export const tokens = {
     inkSoft: "#39342a",
     inkMute: "#756f61",
 
-    // Accent — deep evergreen
-    accent: "#17322d",
-    accentInk: "#f6f0df",
+    // Accent — warmer evergreen used by CTAs and the logo field
+    accent: "#123f37",
+    accentInk: "#fff7df",
 
     // Language chips
     chipKoBg: "#eadfbe",

@@ -12,8 +12,8 @@
   --color-ink-soft: #39342a;
   --color-ink-mute: #756f61;
 
-  --color-accent: #17322d;
-  --color-accent-ink: #f6f0df;
+  --color-accent: #123f37;
+  --color-accent-ink: #fff7df;
 
   --color-chip-ko-bg: #eadfbe;
   --color-chip-ko-ink: #5b4711;
@@ -178,11 +178,14 @@
 }
 
 html {
+  overflow-x: clip;
   scroll-behavior: smooth;
 }
 
 html,
 body {
+  max-width: 100%;
+  overflow-x: clip;
   background: var(--color-bg);
   color: var(--color-ink);
   font-family: var(--font-sans);
