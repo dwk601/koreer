@@ -5,6 +5,7 @@ import { JobCard } from "@/components/jobs/job-card";
 import { SearchBar } from "@/components/search/search-bar";
 import { listJobs, getStats } from "@/lib/api/jobs";
 import type { ListResponse, StatsResponse } from "@/lib/api/schemas";
+import { SOURCE_LABEL } from "@/lib/sources";
 
 // The home page surfaces the freshest jobs + live stats. Render on-demand
 // (with the API client's 60s revalidation) so we never serve stale results
@@ -65,7 +66,7 @@ export default async function HomePage({
   const [list, stats] = await Promise.all([safeListJobs(), safeGetStats()]);
 
   const totalFmt = new Intl.NumberFormat(locale).format(stats.total_jobs);
-  const sourceCount = Object.keys(stats.by_source).length || 8;
+  const sourceCount = Object.keys(stats.by_source).length || Object.keys(SOURCE_LABEL).length;
 
   return (
     <div className="relative">

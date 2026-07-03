@@ -7,10 +7,10 @@
  * raw id for forward compatibility — so a newly added scraper still shows
  * up reasonably even before this list is updated.
  *
- * Keep this list in sync with `etl/scrapers/spider_*.py`. As of 2026-05-14
+ * Keep this list in sync with `etl/scrapers/spider_*.py`. As of 2026-07-03
  * the active scrapers are:
  *   gtksa, heykorean, indeed, jobkoreausa, koreadaily, linkedin,
- *   radiokorea, workingus, wowseattle
+ *   radiokorea, simplyhired, workingus, wowseattle
  */
 export const SOURCE_LABEL: Record<string, string> = {
   gtksa: "GTKSA",
@@ -20,6 +20,7 @@ export const SOURCE_LABEL: Record<string, string> = {
   koreadaily: "Korea Daily",
   linkedin: "LinkedIn",
   radiokorea: "Radio Korea",
+  simplyhired: "SimplyHired",
   workingus: "WorkingUS",
   wowseattle: "Wow Seattle",
 };
