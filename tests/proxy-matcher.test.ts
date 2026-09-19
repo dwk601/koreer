@@ -121,14 +121,39 @@ describe("proxy matcher: paths that MUST reach next-intl", () => {
   });
 
   it.each([
+    ["/apifoo/jobs", "invalid locale reaching the list page"],
+    ["/apifoo/jobs/123", "invalid locale reaching the detail page"],
+    ["/apifoo/opengraph-image", "invalid locale reaching the OG image route"],
+    ["/zh", "well-formed but unsupported locale"],
+    ["/zh/jobs", "well-formed but unsupported locale, nested"],
+  ])("%s is proxied (%s)", (pathname) => {
+    expect(proxied(pathname)).toBe(true);
+  });
+});
+
+describe("proxy matcher: dotted paths bypass locale negotiation", () => {
+  it.each([
     "/wp-login.php",
     "/xmlrpc.php",
     "/foo.bar",
     "/.env",
     "/admin/config.php",
     "/old-site/index.php",
-  ])("dotted paths %s bypass locale negotiation", (pathname) => {
+  ])("dotted path %s bypasses the proxy", (pathname) => {
     expect(proxied(pathname)).toBe(false);
+  });
+
+  /**
+   * The blanket dotted bypass is only safe because these paths still cannot
+   * reach `Intl` with a raw segment: `assertLocale` 404s them in the page.
+   * Pin the crash signature so the guard cannot be removed on the argument
+   * that "the matcher handles it".
+   */
+  it("bypassed dotted segments are exactly the values that crash Intl", () => {
+    for (const pathname of ["/wp-login.php", "/foo.bar", "/robots.txtx"]) {
+      expect(proxied(pathname)).toBe(false);
+      expect(() => new Intl.NumberFormat(pathname.slice(1))).toThrow(RangeError);
+    }
   });
 });
 
@@ -138,9 +163,26 @@ describe("proxy matcher: paths that MUST bypass next-intl", () => {
     "/_next/static/chunks/main.js",
     "/_next/image",
     "/_vercel/insights/view",
+    "/trpc/jobs.list",
   ])("system route %s bypasses the proxy", (pathname) => {
     expect(proxied(pathname)).toBe(false);
   });
+
+  // The `$` half of the `(?:/|$)` anchor: the bare system prefixes.
+  it.each(["/api", "/trpc", "/_next", "/_vercel"])(
+    "bare system prefix %s bypasses the proxy",
+    (pathname) => {
+      expect(proxied(pathname)).toBe(false);
+    },
+  );
+
+  // The `/` half of the anchor, with an empty remainder.
+  it.each(["/api/", "/trpc/", "/_next/", "/_vercel/"])(
+    "system prefix with a trailing slash %s bypasses the proxy",
+    (pathname) => {
+      expect(proxied(pathname)).toBe(false);
+    },
+  );
 
   it.each([
     ["/robots.txt", "app/robots.ts"],
@@ -200,12 +242,24 @@ describe("proxy matcher: static-file and boundary coverage", () => {
   it.each([
     ["/apifoo", "the `api` alternative must end at `/` or `$`"],
     ["/api-docs", "`api` prefix must not match"],
+    ["/apis/v1", "`api` prefix must not match a longer first segment"],
+    ["/apifoo/opengraph-image", "nested route under a non-system `api*` prefix"],
     ["/trpcx", "`trpc` prefix must not match"],
+    ["/trpc-client/x", "`trpc` prefix must not match a longer first segment"],
     ["/_nextfoo", "`_next` prefix must not match"],
+    ["/_next-assets/x", "`_next` prefix must not match a longer first segment"],
     ["/_vercelish", "`_vercel` prefix must not match"],
   ])("non-system prefix %s is proxied (%s)", (pathname) => {
     expect(proxied(pathname)).toBe(true);
   });
+
+  // A system prefix that is not the *first* segment must not be honoured.
+  it.each(["/ko/api", "/ko/api/suggest", "/en/_next/foo"])(
+    "%s is proxied: the system prefixes are only anchored at the path root",
+    (pathname) => {
+      expect(proxied(pathname)).toBe(true);
+    },
+  );
 
   it("dotted system-like names remain static bypasses without literal allowlist entries", () => {
     for (const pathname of ["/robots.txtx", "/favicon.icons", "/sitemap.xml.bak"]) {
@@ -222,6 +276,38 @@ describe("proxy matcher: structural expectations", () => {
 
   it("contains the blanket dotted-path bypass for all static extensions", () => {
     expect(String(proxyConfig.matcher)).toContain(".*\\..*");
+  });
+
+  /**
+   * Regression guard for the unescaped-dot defect: literal filenames such as
+   * `favicon.ico` inside the lookahead turned `.` into a wildcard, so
+   * `/faviconXico` silently bypassed the proxy. Assert no literal filename
+   * allowlist entries remain, and that every `.` in the matcher is either
+   * escaped (`\.`) or an intentional `.*` wildcard.
+   */
+  it("has no literal filename allowlist entries left", () => {
+    const matcher = String(proxyConfig.matcher);
+    for (const literal of ["favicon", "sitemap", "robots", "manifest"]) {
+      expect(matcher).not.toContain(literal);
+    }
+  });
+
+  it("contains no unescaped literal dots", () => {
+    const matcher = String(proxyConfig.matcher);
+    const offenders: string[] = [];
+    for (let i = 0; i < matcher.length; i++) {
+      if (matcher[i] !== ".") continue;
+      const escaped = matcher[i - 1] === "\\";
+      const wildcard = matcher[i + 1] === "*" || matcher[i + 1] === "+";
+      if (!escaped && !wildcard) {
+        offenders.push(`index ${i}: ...${matcher.slice(Math.max(0, i - 6), i + 6)}...`);
+      }
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("anchors every system-route alternative with (?:/|$)", () => {
+    expect(String(proxyConfig.matcher)).toContain("(?:/|$)");
   });
 
   it("compiles to a regex that Next will accept", () => {

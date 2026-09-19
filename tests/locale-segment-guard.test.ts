@@ -150,4 +150,58 @@ describe("locale validation covers metadata and image routes", () => {
     expect(src.indexOf("assertLocale(")).toBeLessThan(src.indexOf("getTranslations("));
     expect(src).toContain("getTranslations({ locale, namespace: \"app\" })");
   });
+
+  /**
+   * The layout component itself must keep validating. The previous revision
+   * used an inline `hasLocale(...) -> notFound()`; the guard is now shared via
+   * assertLocale, but dropping it entirely would let an invalid segment render
+   * `<html lang="wp-login.php">` and a soft 200.
+   */
+  it("app/[locale]/layout.tsx LocaleLayout still validates the raw segment", () => {
+    const body = exportBody(read("app/[locale]/layout.tsx"), "LocaleLayout");
+    const guard = body.indexOf("assertLocale(rawLocale)");
+    expect(guard).toBeGreaterThan(-1);
+    // Nothing locale-sensitive may run before the guard.
+    const before = body.slice(0, guard);
+    expect(before).not.toContain("setRequestLocale(");
+    expect(before).not.toContain("getTranslations(");
+    expect(before).not.toMatch(/new Intl\./);
+    // The validated value is what reaches next-intl and the rendered markup.
+    expect(body).toContain("setRequestLocale(locale)");
+    expect(body).toContain("lang={locale}");
+  });
+
+  it.each([
+    "app/[locale]/layout.tsx",
+    "app/[locale]/opengraph-image.tsx",
+  ])("%s never uses rawLocale outside the assertLocale call", (file) => {
+    const src = read(file);
+    const rawUses = [...src.matchAll(/\brawLocale\b/g)].length;
+    const rawDeclarations = [...src.matchAll(/locale: rawLocale/g)].length;
+    const guardedUses = [...src.matchAll(/assertLocale\(rawLocale\)/g)].length;
+    expect(rawDeclarations).toBeGreaterThan(0);
+    expect(rawUses).toBe(rawDeclarations + guardedUses);
+  });
+
+  it("every generateMetadata under app/[locale] guards its locale param", () => {
+    const offenders: string[] = [];
+    for (const file of walk(LOCALE_SEGMENT)) {
+      const src = readFileSync(file, "utf8");
+      if (!/export\s+async\s+function\s+generateMetadata\b/.test(src)) continue;
+      const body = exportBody(src, "generateMetadata");
+      if (!body.includes("assertLocale(")) offenders.push(relative(ROOT, file));
+    }
+    expect(offenders).toEqual([]);
+  });
+
+  it("no file under app/[locale] resolves params.locale without the shared guard", () => {
+    const offenders: string[] = [];
+    for (const file of walk(LOCALE_SEGMENT)) {
+      const src = readFileSync(file, "utf8");
+      if (!src.includes("params")) continue;
+      if (!/\{\s*locale(?::\s*rawLocale)?\s*\}\s*=\s*await params/.test(src)) continue;
+      if (!src.includes("assertLocale")) offenders.push(relative(ROOT, file));
+    }
+    expect(offenders).toEqual([]);
+  });
 });
