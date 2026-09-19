@@ -1,5 +1,8 @@
+import { hasLocale } from "next-intl";
+
 import type { JobSummary } from "@/lib/api/schemas";
 import { daysSincePosted } from "@/lib/date";
+import { routing } from "@/lib/i18n/routing";
 
 /**
  * Human-readable salary summary. Returns null when salary is not listed
@@ -57,7 +60,10 @@ export function formatPostedRelative(
 ): string | null {
   const days = daysSincePosted(postDate, now);
   if (days == null) return null;
-  const rtf = new Intl.RelativeTimeFormat(locale, { numeric: "auto" });
+  const safeLocale = hasLocale(routing.locales, locale)
+    ? locale
+    : routing.defaultLocale;
+  const rtf = new Intl.RelativeTimeFormat(safeLocale, { numeric: "auto" });
   if (days === 0) return rtf.format(0, "day"); // "today" / "오늘"
   return rtf.format(-days, "day");
 }

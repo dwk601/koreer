@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { getLocale, getTranslations, setRequestLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 
 import { Link } from "@/lib/i18n/navigation";
 import { ApiError } from "@/lib/api/client";
@@ -11,6 +11,7 @@ import { JobCard } from "@/components/jobs/job-card";
 import { formatPostedRelative, formatSalary } from "@/lib/format";
 import { formatSourceLabel } from "@/lib/sources";
 import { daysSincePosted } from "@/lib/date";
+import { assertLocale } from "@/lib/i18n/assert-locale";
 
 type PageParams = { locale: string; id: string };
 type Props = { params: Promise<PageParams> };
@@ -33,7 +34,8 @@ async function loadJob(idStr: string): Promise<JobDetail | null> {
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { locale, id } = await params;
+  const { locale: rawLocale, id } = await params;
+  const locale = assertLocale(rawLocale);
   const job = await loadJob(id).catch(() => null);
   if (!job) {
     const t = await getTranslations({ locale, namespace: "error" });
@@ -62,7 +64,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function JobDetailPage({ params }: Props) {
-  const { locale, id } = await params;
+  const { locale: rawLocale, id } = await params;
+  const locale = assertLocale(rawLocale);
   setRequestLocale(locale);
 
   const job = await loadJob(id);
@@ -71,7 +74,7 @@ export default async function JobDetailPage({ params }: Props) {
   const t = await getTranslations();
   const tDetail = await getTranslations("detail");
 
-  const lang = await getLocale();
+  const lang = locale;
   const salary = formatSalary({
     salary_min: job.salary.min,
     salary_max: job.salary.max,

@@ -18,6 +18,8 @@ import {
   type RawSearchParams,
 } from "@/lib/url/search-params";
 import type { ListResponse, Facets } from "@/lib/api/schemas";
+import { assertLocale } from "@/lib/i18n/assert-locale";
+import type { Locale } from "@/lib/i18n/routing";
 
 export const dynamic = "force-dynamic";
 
@@ -27,7 +29,8 @@ type Props = {
 };
 
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }) {
-  const { locale } = await params;
+  const { locale: rawLocale } = await params;
+  const locale = assertLocale(rawLocale);
   const t = await getTranslations({ locale, namespace: "jobs" });
   return {
     title: t("pageTitle"),
@@ -43,7 +46,8 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
 }
 
 export default async function JobsPage({ params, searchParams }: Props) {
-  const { locale } = await params;
+  const { locale: rawLocale } = await params;
+  const locale = assertLocale(rawLocale);
   setRequestLocale(locale);
   const raw = await searchParams;
   const parsed = parseListParams(raw);
@@ -146,7 +150,7 @@ async function Results({
   locale,
 }: {
   parsed: ReturnType<typeof parseListParams>;
-  locale: string;
+  locale: Locale;
 }) {
   const t = await getTranslations("jobs");
 

@@ -6,8 +6,9 @@ import { routing } from "./lib/i18n/routing";
 export default createMiddleware(routing);
 
 export const config = {
-  // Match all pathnames except for
-  // - `/api`, `/trpc`, `/_next`, `/_vercel` system routes
-  // - any pathname containing a dot (e.g. `favicon.ico`, `robots.txt`)
-  matcher: "/((?!api|trpc|_next|_vercel|.*\\..*).*)",
+  // Match application paths while bypassing system routes and common files.
+  // Keep dotted, non-file paths in the match: next-intl must redirect them so
+  // they cannot reach the `[locale]` segment as an unvalidated locale.
+  matcher:
+    "/((?!api|trpc|_next|_vercel|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:css|js|mjs|map|json|txt|xml|ico|png|jpg|jpeg|gif|webp|svg|woff2?|ttf|eot|avif)$).*)",
 };

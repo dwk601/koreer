@@ -6,6 +6,7 @@ import { SearchBar } from "@/components/search/search-bar";
 import { listJobs, getStats } from "@/lib/api/jobs";
 import type { ListResponse, StatsResponse } from "@/lib/api/schemas";
 import { SOURCE_LABEL, formatSourceLabel } from "@/lib/sources";
+import { assertLocale } from "@/lib/i18n/assert-locale";
 
 export const dynamic = "force-dynamic";
 
@@ -48,7 +49,8 @@ export default async function HomePage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  const { locale: rawLocale } = await params;
+  const locale = assertLocale(rawLocale);
   setRequestLocale(locale);
 
   const t = await getTranslations();
