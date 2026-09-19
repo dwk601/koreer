@@ -127,12 +127,9 @@ describe("proxy matcher: paths that MUST reach next-intl", () => {
     "/.env",
     "/admin/config.php",
     "/old-site/index.php",
-  ])(
-    "dotted junk path %s is proxied, so it can never arrive at [locale] unvalidated",
-    (pathname) => {
-      expect(proxied(pathname)).toBe(true);
-    },
-  );
+  ])("dotted paths %s bypass locale negotiation", (pathname) => {
+    expect(proxied(pathname)).toBe(false);
+  });
 });
 
 describe("proxy matcher: paths that MUST bypass next-intl", () => {
@@ -169,14 +166,7 @@ describe("proxy matcher: paths that MUST bypass next-intl", () => {
   );
 });
 
-/**
- * The commit under review replaced "any path containing a dot bypasses the
- * proxy" with an extension allowlist. The tests below pin the *current*
- * (defective) behaviour so the regressions are visible and a future fix will
- * have to update them deliberately. They are documented in the review report;
- * none of them is the intended behaviour.
- */
-describe("proxy matcher: DEFECTS pinned by this review", () => {
+describe("proxy matcher: static-file and boundary coverage", () => {
   it.each([
     ["/brochure.pdf", "pdf"],
     ["/site.webmanifest", "webmanifest"],
@@ -192,10 +182,9 @@ describe("proxy matcher: DEFECTS pinned by this review", () => {
     ["/.well-known/apple-app-site-association", "extensionless well-known file"],
     ["/.well-known/assetlinks", "extensionless well-known file"],
   ])(
-    "DEFECT-REGRESSION: static file %s is now locale-redirected instead of served (%s)",
+    "static file %s bypasses locale negotiation (%s)",
     (pathname) => {
-      // true == the request is redirected to /ko/<path> and then 404s.
-      expect(proxied(pathname)).toBe(true);
+      expect(proxied(pathname)).toBe(false);
     },
   );
 
@@ -204,40 +193,23 @@ describe("proxy matcher: DEFECTS pinned by this review", () => {
     ["/faviconAico", "favicon.ico is unescaped"],
     ["/sitemapAxml", "sitemap.xml is unescaped"],
     ["/robotsAtxt", "robots.txt is unescaped"],
-  ])("DEFECT: %s wrongly bypasses the proxy (%s)", (pathname) => {
-    expect(proxied(pathname)).toBe(false);
+  ])("non-file path %s is proxied (%s)", (pathname) => {
+    expect(proxied(pathname)).toBe(true);
   });
 
   it.each([
-    ["/apifoo", "the `api` alternative is not anchored with a `/` or `$`"],
-    ["/api-docs", "`api` prefix match"],
-    ["/trpcx", "`trpc` prefix match"],
-    ["/_nextfoo", "`_next` prefix match"],
-    ["/_vercelish", "`_vercel` prefix match"],
-    ["/robots.txtx", "`robots.txt` prefix match"],
-    ["/sitemap.xml.bak", "`sitemap.xml` prefix match"],
-    ["/favicon.icons", "`favicon.ico` prefix match"],
-  ])(
-    "DEFECT: %s wrongly bypasses the proxy and reaches [locale] as a raw segment (%s)",
-    (pathname) => {
-      expect(proxied(pathname)).toBe(false);
-    },
-  );
+    ["/apifoo", "the `api` alternative must end at `/` or `$`"],
+    ["/api-docs", "`api` prefix must not match"],
+    ["/trpcx", "`trpc` prefix must not match"],
+    ["/_nextfoo", "`_next` prefix must not match"],
+    ["/_vercelish", "`_vercel` prefix must not match"],
+  ])("non-system prefix %s is proxied (%s)", (pathname) => {
+    expect(proxied(pathname)).toBe(true);
+  });
 
-  it("DEFECT: bypassed prefix paths still deliver an invalid locale to the app layer", () => {
-    // These are exactly the shapes that used to crash: a single path segment
-    // that becomes `params.locale` because the proxy never saw the request.
-    // They only 404 (instead of throwing RangeError) because `assertLocale`
-    // runs first in the page — the matcher does not protect them.
+  it("dotted system-like names remain static bypasses without literal allowlist entries", () => {
     for (const pathname of ["/robots.txtx", "/favicon.icons", "/sitemap.xml.bak"]) {
       expect(proxied(pathname)).toBe(false);
-      expect(() => new Intl.NumberFormat(pathname.slice(1))).toThrow(RangeError);
-    }
-    // These bypass too but happen to be Intl-parsable, so they were never
-    // part of the crash signature.
-    for (const pathname of ["/apifoo", "/trpcx"]) {
-      expect(proxied(pathname)).toBe(false);
-      expect(() => new Intl.NumberFormat(pathname.slice(1))).not.toThrow();
     }
   });
 });
@@ -248,8 +220,8 @@ describe("proxy matcher: structural expectations", () => {
     expect(compiledMatchers).toHaveLength(1);
   });
 
-  it("no longer contains the blanket dotted-path bypass", () => {
-    expect(String(proxyConfig.matcher)).not.toContain(".*\\..*)");
+  it("contains the blanket dotted-path bypass for all static extensions", () => {
+    expect(String(proxyConfig.matcher)).toContain(".*\\..*");
   });
 
   it("compiles to a regex that Next will accept", () => {

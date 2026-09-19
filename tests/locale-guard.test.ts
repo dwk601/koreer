@@ -32,15 +32,15 @@ describe("locale guards", () => {
 });
 
 describe("proxy locale coverage", () => {
-  it("runs for dotted junk paths so next-intl can redirect them before [locale]", () => {
+  it("keeps dotted paths out of locale negotiation", () => {
     const proxySource = readFileSync(resolve(__dirname, "../proxy.ts"), "utf8");
     const matcher = proxySource.match(/matcher:\s*(["'`])([\s\S]+?)\1/)?.[2];
     expect(matcher).toBeDefined();
-    expect(matcher).not.toContain(".*\\\\..*");
+    expect(matcher).toContain(".*\\\\..*");
 
     const matcherRegex = new RegExp(`^${matcher?.replaceAll("\\\\", "\\")}$`);
-    expect(matcherRegex.test("/wp-login.php")).toBe(true);
-    expect(matcherRegex.test("/foo.bar")).toBe(true);
+    expect(matcherRegex.test("/wp-login.php")).toBe(false);
+    expect(matcherRegex.test("/foo.bar")).toBe(false);
 
     // Actual metadata and known public assets remain outside the proxy.
     expect(matcherRegex.test("/favicon.ico")).toBe(false);

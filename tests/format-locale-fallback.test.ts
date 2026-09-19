@@ -33,37 +33,21 @@ describe("formatPostedRelative: never throws on a bad locale", () => {
   });
 });
 
-/**
- * The fallback keeps the page alive, which is the right call for a formatter.
- * These tests pin *what* it silently swallows, because the fallback is wider
- * than "reject crash-inducing junk": it also rewrites perfectly valid BCP-47
- * locales and casing variants to Korean without any signal.
- */
-describe("DEFECT (masking) pinned by this review: fallback is silent and lossy", () => {
+describe("formatPostedRelative locale normalization and fallback", () => {
   it.each([
     ["en-US", "valid BCP-47 English variant"],
     ["en-GB", "valid BCP-47 English variant"],
     ["EN", "uppercase English"],
     ["en-u-nu-latn", "valid Unicode extension"],
-  ])(
-    "DEFECT: %s (%s) is silently rendered in Korean instead of English",
-    (locale) => {
-      // Intl itself handles these fine...
-      expect(() => new Intl.RelativeTimeFormat(locale)).not.toThrow();
-      // ...but hasLocale() rejects them, so the user sees Korean text.
-      expect(formatPostedRelative("2026-05-18", locale, NOW)).toBe(
-        formatPostedRelative("2026-05-18", routing.defaultLocale, NOW),
-      );
-      expect(formatPostedRelative("2026-05-18", locale, NOW)).not.toBe("2 days ago");
-    },
-  );
+  ])("normalizes %s (%s) to the supported base language", (locale) => {
+    expect(() => new Intl.RelativeTimeFormat(locale)).not.toThrow();
+    expect(formatPostedRelative("2026-05-18", locale, NOW)).toBe("2 days ago");
+  });
 
-  it("DEFECT: a caller bug (e.g. passing a country or a route segment) is indistinguishable from Korean", () => {
+  it("falls back to Korean for an unsupported caller value", () => {
     const fromBug = formatPostedRelative("2026-05-18", "jobs", NOW);
     const fromKorean = formatPostedRelative("2026-05-18", "ko", NOW);
     expect(fromBug).toBe(fromKorean);
-    // No channel exists for the caller to detect the substitution: the return
-    // type is `string | null` and nothing is logged.
   });
 
   it("the only in-repo caller passes a next-intl-resolved locale, so the fallback is currently unreachable in prod", () => {

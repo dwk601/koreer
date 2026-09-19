@@ -60,9 +60,24 @@ export function formatPostedRelative(
 ): string | null {
   const days = daysSincePosted(postDate, now);
   if (days == null) return null;
-  const safeLocale = hasLocale(routing.locales, locale)
-    ? locale
+  let normalizedLocale = locale;
+  try {
+    // Keep valid BCP-47 variants (for example en-US and en-u-nu-latn)
+    // aligned with the app's base-language locale list.
+    normalizedLocale = new Intl.Locale(locale).language;
+  } catch {
+    // Leave malformed input for the supported-locale check below.
+  }
+
+  const isSupportedLocale = hasLocale(routing.locales, normalizedLocale);
+  const safeLocale = isSupportedLocale
+    ? normalizedLocale
     : routing.defaultLocale;
+  if (!isSupportedLocale && process.env.NODE_ENV === "development") {
+    console.warn(
+      `[formatPostedRelative] Unsupported locale "${locale}"; falling back to "${routing.defaultLocale}"`,
+    );
+  }
   const rtf = new Intl.RelativeTimeFormat(safeLocale, { numeric: "auto" });
   if (days === 0) return rtf.format(0, "day"); // "today" / "오늘"
   return rtf.format(-days, "day");

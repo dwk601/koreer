@@ -135,30 +135,19 @@ describe("detail page no longer re-reads the locale from request context", () =>
   });
 });
 
-/**
- * Pinned defects. These assertions document what the reviewed commit does
- * *not* cover; they are listed in the review report. They deliberately assert
- * the current (unguarded) state so that fixing the production code will make
- * them fail and force an update.
- */
-describe("DEFECTS pinned by this review", () => {
-  it("DEFECT: app/[locale]/layout.tsx generateMetadata uses the raw locale", () => {
+describe("locale validation covers metadata and image routes", () => {
+  it("app/[locale]/layout.tsx generateMetadata validates before translations", () => {
     const src = read("app/[locale]/layout.tsx");
     const body = exportBody(src, "generateMetadata");
-    expect(body).not.toContain("assertLocale");
-    expect(body).not.toContain("hasLocale");
-    // It emits the unvalidated segment into canonical URLs / og:locale.
+    expect(body).toContain("assertLocale(rawLocale)");
+    expect(body.indexOf("assertLocale(")).toBeLessThan(body.indexOf("getTranslations("));
     expect(body).toContain("canonical: `/${locale}`");
-    // The component (not the metadata function) is the only thing validating.
-    expect(exportBody(src, "LocaleLayout")).toContain("hasLocale(routing.locales, locale)");
   });
 
-  it("DEFECT: app/[locale]/opengraph-image.tsx renders for any locale segment", () => {
+  it("app/[locale]/opengraph-image.tsx validates before translations", () => {
     const src = read("app/[locale]/opengraph-image.tsx");
-    expect(src).not.toContain("assertLocale");
-    expect(src).not.toContain("hasLocale");
+    expect(src).toContain("assertLocale(rawLocale)");
+    expect(src.indexOf("assertLocale(")).toBeLessThan(src.indexOf("getTranslations("));
     expect(src).toContain("getTranslations({ locale, namespace: \"app\" })");
-    // Verified live against `next dev`: GET /apifoo/opengraph-image -> 200,
-    // i.e. an invalid locale segment serves a cacheable soft-404 image.
   });
 });

@@ -1,13 +1,12 @@
 import type { Metadata, Viewport } from "next";
 import { Geist } from "next/font/google";
 import localFont from "next/font/local";
-import { NextIntlClientProvider, hasLocale } from "next-intl";
+import { NextIntlClientProvider } from "next-intl";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import { notFound } from "next/navigation";
-
 import { Header } from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { routing } from "@/lib/i18n/routing";
+import { assertLocale } from "@/lib/i18n/assert-locale";
 import { cn } from "@/lib/cn";
 
 // Latin typeface - used for English content and numeric UI.
@@ -36,7 +35,8 @@ export async function generateMetadata({
 }: {
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
-  const { locale } = await params;
+  const { locale: rawLocale } = await params;
+  const locale = assertLocale(rawLocale);
   const t = await getTranslations({ locale, namespace: "app" });
   const siteUrl =
     process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -79,10 +79,8 @@ export default async function LocaleLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
-  if (!hasLocale(routing.locales, locale)) {
-    notFound();
-  }
+  const { locale: rawLocale } = await params;
+  const locale = assertLocale(rawLocale);
   setRequestLocale(locale);
 
   return (

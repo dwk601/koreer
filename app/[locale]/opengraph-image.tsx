@@ -1,5 +1,6 @@
 import { ImageResponse } from "next/og";
 import { getTranslations } from "next-intl/server";
+import { assertLocale } from "@/lib/i18n/assert-locale";
 import { tokens } from "@/lib/tokens";
 
 // Image metadata
@@ -18,7 +19,8 @@ export default async function OpengraphImage({
 }: {
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = await params;
+  const { locale: rawLocale } = await params;
+  const locale = assertLocale(rawLocale);
   const t = await getTranslations({ locale, namespace: "app" });
 
   const isKo = locale === "ko";

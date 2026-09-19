@@ -6,9 +6,8 @@ import { routing } from "./lib/i18n/routing";
 export default createMiddleware(routing);
 
 export const config = {
-  // Match application paths while bypassing system routes and common files.
-  // Keep dotted, non-file paths in the match: next-intl must redirect them so
-  // they cannot reach the `[locale]` segment as an unvalidated locale.
-  matcher:
-    "/((?!api|trpc|_next|_vercel|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:css|js|mjs|map|json|txt|xml|ico|png|jpg|jpeg|gif|webp|svg|woff2?|ttf|eot|avif)$).*)",
+  // Match application paths while bypassing system routes and any dotted path.
+  // The latter keeps every public/static file out of locale negotiation, while
+  // assertLocale guards dynamic page segments that do reach the app layer.
+  matcher: "/((?!(?:api|trpc|_next|_vercel)(?:/|$)|.*\\..*).*)",
 };
